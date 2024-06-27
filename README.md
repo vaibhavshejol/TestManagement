@@ -16,3 +16,49 @@ To run this project locally, follow these steps:
 
 Clone the repository:
 git clone https://github.com/yourusername/test-management.git
+
+Navigate to the project directory
+cd test-management
+
+**Run the application**
+You can run the application using directly from your IDE.
+Open the project in your IDE and run TestManagementApplication.java as a Java application.
+
+**Access the application**
+Once the application is running, you can access it at:
+http://localhost:8080
+
+**API Endpoints:**
+POST /questions
+
+Create a new MCQ question. Use JSON format with fields: question, option1, option2, option3, option4, correctAnswer.
+GET /questions
+
+Retrieve all MCQ questions.
+GET /questions/{id}
+
+Retrieve a specific MCQ question by its ID.
+PUT /questions/{id}
+
+Update an existing MCQ question by its ID. Use JSON format with fields: question, option1, option2, option3, option4, correctAnswer.
+DELETE /questions/{id}
+
+Delete an MCQ question by its ID.
+
+**Sample JSON for Question Object:**
+{
+    "category":"SpringBoot",
+    "question":"In Spring Boot @RestController annotation is equivalent to",
+    "optionOne":"@Controller and @PostMapping",
+    "optionTwo":"@Controller and @Component",
+    "optionThree":"@Controller and @ResponseBody",
+    "optionFour":"@Controller and @ResponseStatus",
+    "correctOption":"@Controller and @ResponseBody",
+    "positiveMark":3,
+    "negativeMark":-1
+}
+
+**Notes:**
+This project uses an in-memory H2 database by default. You can configure the database settings in application.properties file if you want to use a different database.
+
+Make sure you have Maven and Java installed to build and run the project.
