@@ -1,7 +1,5 @@
 package com.test.service;
 
-import com.test.controller.List;
-import com.test.controller.Optional;
 import com.test.entities.MCQQuestion;
 
 import java.util.*;
