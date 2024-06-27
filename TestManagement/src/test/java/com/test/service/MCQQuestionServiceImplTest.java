@@ -1,4 +1,4 @@
-package com.test.controller;
+package com.test.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,18 +13,17 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.test.entities.MCQQuestion;
-import com.test.service.MCQQuestionService;
+import com.test.repository.MCQQuestionRepository;
 
 @SpringBootTest
-public class MCQQuestionControllerTest {
+public class MCQQuestionServiceImplTest {
     
+    @Mock
+    private MCQQuestionRepository repo;
+
     @Mock
     private MCQQuestionService questionService;
 
-    @Mock
-    private MCQQuestionController questionController;
-
-    
     @Test
     public void createQuestion() {
         MCQQuestion expectedQuestion=new MCQQuestion();
@@ -32,7 +31,7 @@ public class MCQQuestionControllerTest {
         expectedQuestion.setCategory("SpringBoot");
         expectedQuestion.setQuestion("What is spring boot?");
 
-        when(questionService.createQuestion(any(MCQQuestion.class))).thenReturn(expectedQuestion);
+        when(repo.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
         assertEquals(1, expectedQuestion.getId());
     }
 
@@ -52,7 +51,7 @@ public class MCQQuestionControllerTest {
         list.add(expectedQuestion);
         list.add(expectedQuestion1);
 
-        when(questionService.getAllQuestions()).thenReturn(list);
+        when(repo.findAll()).thenReturn(list);
         assertEquals(2, list.size());
     }
 
@@ -65,7 +64,7 @@ public class MCQQuestionControllerTest {
         Optional<MCQQuestion> expectedQuestion=Optional.of(question);
         
 
-        when(questionService.getQuestionById(1L)).thenReturn(expectedQuestion);
+        when(repo.findById(1L)).thenReturn(expectedQuestion);
         assertEquals(1, expectedQuestion.get().getId());
     }
 
@@ -76,17 +75,8 @@ public class MCQQuestionControllerTest {
         expectedQuestion.setCategory("SpringBoot");
         expectedQuestion.setQuestion("What is spring boot?");
 
-        when(questionService.updateQuestion(any(MCQQuestion.class))).thenReturn(expectedQuestion);
+        when(repo.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
         assertEquals(1, expectedQuestion.getId());
-    }
-
-    @Test
-    public void deleteQuestion() {
-
-        when(questionController.deleteQuestion(1L)).thenReturn("Question deleted.");
-
-        String result=questionController.deleteQuestion(1L);
-        assertEquals("Question deleted.", result);
     }
 
 }

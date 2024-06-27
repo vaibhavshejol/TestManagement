@@ -44,7 +44,7 @@ public class MCQQuestionController {
             notFoundQuestion.setQuestion("Question with given id not found.");
             return notFoundQuestion;
         }
-        question.setId(id); // Ensure the correct ID is set
+        question.setId(id);
         return questionService.updateQuestion(question);
     }
 
