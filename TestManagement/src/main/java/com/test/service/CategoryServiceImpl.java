@@ -37,7 +37,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategoryById(Long id) {
-        repo.deleteById(id);
+        try{
+            repo.deleteById(id);
+        } catch(Exception ex){
+            throw new CategoryDeleteException("Failed to delete category with id: " + id);
+        }
     }
     
 }
