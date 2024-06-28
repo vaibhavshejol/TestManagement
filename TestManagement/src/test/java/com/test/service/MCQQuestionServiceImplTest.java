@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.test.entities.MCQQuestion;
+import com.test.entities.Subcategory;
 import com.test.repository.MCQQuestionRepository;
 
 @SpringBootTest
@@ -27,8 +28,9 @@ public class MCQQuestionServiceImplTest {
     @Test
     public void createQuestion() {
         MCQQuestion expectedQuestion=new MCQQuestion();
+        Subcategory subcategory=new Subcategory();
         expectedQuestion.setId(1L);
-        expectedQuestion.setCategory("SpringBoot");
+        expectedQuestion.setSubcategory(subcategory);
         expectedQuestion.setQuestion("What is spring boot?");
 
         when(repo.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
@@ -38,13 +40,15 @@ public class MCQQuestionServiceImplTest {
     @Test
     public void getAllQuestions() {
         MCQQuestion expectedQuestion=new MCQQuestion();
+        Subcategory subcategory=new Subcategory();
         expectedQuestion.setId(1L);
-        expectedQuestion.setCategory("SpringBoot");
+        expectedQuestion.setSubcategory(subcategory);
         expectedQuestion.setQuestion("What is spring boot?");
 
         MCQQuestion expectedQuestion1=new MCQQuestion();
+        Subcategory subcategory1=new Subcategory();
         expectedQuestion1.setId(2L);
-        expectedQuestion1.setCategory("Hibernate");
+        expectedQuestion.setSubcategory(subcategory1);
         expectedQuestion1.setQuestion("What is hibernate?");
 
         List<MCQQuestion> list=new ArrayList<MCQQuestion>();
@@ -58,8 +62,9 @@ public class MCQQuestionServiceImplTest {
     @Test
     public void getQuestionById() {
         MCQQuestion question=new MCQQuestion();
+        Subcategory subcategory=new Subcategory();
         question.setId(1L);
-        question.setCategory("SpringBoot");
+        question.setSubcategory(subcategory);
         question.setQuestion("What is spring boot?");
         Optional<MCQQuestion> expectedQuestion=Optional.of(question);
         
@@ -71,8 +76,9 @@ public class MCQQuestionServiceImplTest {
     @Test
     public void updateQuestion() {
         MCQQuestion expectedQuestion=new MCQQuestion();
+        Subcategory subcategory=new Subcategory();
         expectedQuestion.setId(1L);
-        expectedQuestion.setCategory("SpringBoot");
+        expectedQuestion.setSubcategory(subcategory);
         expectedQuestion.setQuestion("What is spring boot?");
 
         when(repo.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
