@@ -37,7 +37,11 @@ public class SubcategoryServiceImpl implements SubcategoryService {
 
     @Override
     public void deleteSubcategoryById(Long id) {
-        repo.deleteById(id);
+        try{
+            repo.deleteById(id);
+        } catch(Exception ex){
+            throw new SubcategoryDeleteException("Failed to delete subcategory with id: " + id);
+        }
     }
     
 }
