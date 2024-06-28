@@ -31,12 +31,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Category category) {
+    public Category updateCategoryById(Category category) {
         return repo.save(category);
     }
 
     @Override
-    public void deleteCategory(Long id) {
+    public void deleteCategoryById(Long id) {
         repo.deleteById(id);
     }
     

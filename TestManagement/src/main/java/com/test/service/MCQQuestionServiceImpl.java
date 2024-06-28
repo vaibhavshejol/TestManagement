@@ -31,12 +31,12 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
     }
 
     @Override
-    public MCQQuestion updateQuestion(MCQQuestion question) {
+    public MCQQuestion updateQuestionById(MCQQuestion question) {
         return repo.save(question);
     }
 
     @Override
-    public void deleteQuestion(Long id) {
+    public void deleteQuestionById(Long id) {
         repo.deleteById(id);
     }
     

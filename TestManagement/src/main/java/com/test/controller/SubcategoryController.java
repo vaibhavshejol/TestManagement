@@ -37,22 +37,22 @@ public class SubcategoryController {
     }
 
     @PutMapping("/subcategory/{id}")
-    public Subcategory updateSubcategory(@PathVariable Long id, @RequestBody Subcategory subcategory) {
+    public Subcategory updateSubcategoryById(@PathVariable Long id, @RequestBody Subcategory subcategory) {
         if (!subcategoryService.getSubcategoryById(id).isPresent()) {
             Subcategory notFoundSubcategory = new Subcategory();
             notFoundSubcategory.setSubcategoryName("Subcategory with given id not found.");
             return notFoundSubcategory;
         }
         subcategory.setSubcategoryId(id);
-        return subcategoryService.updateSubcategory(subcategory);
+        return subcategoryService.updateSubcategoryById(subcategory);
     }
 
     @DeleteMapping("/subcategory/{id}")
-    public String deleteSubcategory(@PathVariable Long id) {
+    public String deleteSubcategoryById(@PathVariable Long id) {
         if (!subcategoryService.getSubcategoryById(id).isPresent()) {
             return "Subcategory with given id not found";
         }
-        subcategoryService.deleteSubcategory(id);
+        subcategoryService.deleteSubcategoryById(id);
         return "Subcategory deleted.";
     }
 }

@@ -31,12 +31,12 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     }
 
     @Override
-    public Subcategory updateSubcategory(Subcategory subcategory) {
+    public Subcategory updateSubcategoryById(Subcategory subcategory) {
         return repo.save(subcategory);
     }
 
     @Override
-    public void deleteSubcategory(Long id) {
+    public void deleteSubcategoryById(Long id) {
         repo.deleteById(id);
     }
     

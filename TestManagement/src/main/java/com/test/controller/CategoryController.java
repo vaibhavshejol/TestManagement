@@ -37,22 +37,22 @@ public class CategoryController {
     }
 
     @PutMapping("/category/{id}")
-    public Category updateCategory(@PathVariable Long id, @RequestBody Category category) {
+    public Category updateCategoryById(@PathVariable Long id, @RequestBody Category category) {
         if (!categoryService.getCategoryById(id).isPresent()) {
             Category notFoundCategory = new Category();
             notFoundCategory.setCategoryName("Category with given id not found.");
             return notFoundCategory;
         }
         category.setCategoryId(id);
-        return categoryService.updateCategory(category);
+        return categoryService.updateCategoryById(category);
     }
 
     @DeleteMapping("/category/{id}")
-    public String deleteCategory(@PathVariable Long id) {
+    public String deleteCategoryById(@PathVariable Long id) {
         if (!categoryService.getCategoryById(id).isPresent()) {
             return "Category with given id not found";
         }
-        categoryService.deleteCategory(id);
+        categoryService.deleteCategoryById(id);
         return "Category deleted.";
     }
 }

@@ -38,22 +38,22 @@ public class MCQQuestionController {
     }
 
     @PutMapping("/questions/{id}")
-    public MCQQuestion updateQuestion(@PathVariable Long id, @RequestBody MCQQuestion question) {
+    public MCQQuestion updateQuestionById(@PathVariable Long id, @RequestBody MCQQuestion question) {
         if (!questionService.getQuestionById(id).isPresent()) {
             MCQQuestion notFoundQuestion = new MCQQuestion();
             notFoundQuestion.setQuestion("Question with given id not found.");
             return notFoundQuestion;
         }
         question.setId(id);
-        return questionService.updateQuestion(question);
+        return questionService.updateQuestionById(question);
     }
 
     @DeleteMapping("/questions/{id}")
-    public String deleteQuestion(@PathVariable Long id) {
+    public String deleteQuestionById(@PathVariable Long id) {
         if (!questionService.getQuestionById(id).isPresent()) {
             return "Question with given id not found";
         }
-        questionService.deleteQuestion(id);
+        questionService.deleteQuestionById(id);
         return "Question deleted.";
     }
 
