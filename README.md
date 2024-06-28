@@ -15,7 +15,7 @@ H2 Database (for demo purposes; can be configured to any database)
 To run this project locally, follow these steps:
 
 Clone the repository:
-git clone https://github.com/yourusername/test-management.git
+git clone https://github.com/vaibhavshejol/TestManagement.git
 
 Navigate to the project directory
 cd test-management
@@ -30,32 +30,59 @@ http://localhost:8080
 
 **API Endpoints:**
 POST /questions
-
 Create a new MCQ question. Use JSON format with fields: question, option1, option2, option3, option4, correctAnswer.
+
 GET /questions
-
 Retrieve all MCQ questions.
+
 GET /questions/{id}
-
 Retrieve a specific MCQ question by its ID.
+
 PUT /questions/{id}
-
 Update an existing MCQ question by its ID. Use JSON format with fields: question, option1, option2, option3, option4, correctAnswer.
-DELETE /questions/{id}
 
+DELETE /questions/{id}
 Delete an MCQ question by its ID.
+
+**Sample JSON for Category Object:**
+{
+    "categoryId": 1,
+    "categoryName": "Java",
+    "categoryDescription": "Core Java category"
+}
+
+**Sample JSON for Subcategory Object:**
+{
+    "subcategoryId": 1,
+    "subcategoryName": "Collection",
+    "subcategoryDescription": "Collection form Java",
+    "category": {
+        "categoryId": 1,
+        "categoryName": "Java",
+        "categoryDescription": "Core Java category"
+    }
+}
 
 **Sample JSON for Question Object:**
 {
-    "category":"SpringBoot",
-    "question":"In Spring Boot @RestController annotation is equivalent to",
-    "optionOne":"@Controller and @PostMapping",
-    "optionTwo":"@Controller and @Component",
-    "optionThree":"@Controller and @ResponseBody",
-    "optionFour":"@Controller and @ResponseStatus",
-    "correctOption":"@Controller and @ResponseBody",
-    "positiveMark":3,
-    "negativeMark":-1
+	"subcategory":{
+		"subcategoryId":4,
+        "subcategoryName":"Annotation",
+        "subcategoryDescription": "Annotations in Spring",
+        "category": {
+            "categoryId": 3,
+            "categoryName": "Spring Boot",
+            "categoryDescription": "Spring Boot Framework category"
+        }
+	},
+	"question": "In Spring Boot @RestController annotation is equivalent to",
+	"optionOne": "@Controller and @PostMapping",
+	"optionTwo": "@Controller and @Component",
+	"optionThree": "@Controller and @ResponseBody",
+	"optionFour": "@Controller and @ResponseStatus",
+	"correctOption": "@Controller and @ResponseBody",
+	"positiveMark": "3",
+	"negativeMark": "-1"
 }
 
 **Notes:**
