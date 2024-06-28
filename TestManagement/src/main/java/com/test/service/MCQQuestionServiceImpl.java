@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.test.entities.MCQQuestion;
+import com.test.exception.MCQQuestionDeleteException;
 import com.test.repository.MCQQuestionRepository;
 
 @Service
@@ -37,7 +38,11 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
 
     @Override
     public void deleteQuestionById(Long id) {
-        repo.deleteById(id);
+        try {
+            repo.deleteById(id);
+        } catch (Exception ex) {
+            throw new MCQQuestionDeleteException("Failed to delete question with id: " + id);
+        }
     }
     
 }

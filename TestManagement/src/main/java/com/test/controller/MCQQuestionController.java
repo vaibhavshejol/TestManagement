@@ -1,7 +1,10 @@
 package com.test.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.test.entities.MCQQuestion;
+import com.test.exception.MCQQuestionDeleteException;
 import com.test.service.MCQQuestionService;
 
 import java.util.*;
@@ -48,13 +52,31 @@ public class MCQQuestionController {
         return questionService.updateQuestionById(question);
     }
 
+    // @DeleteMapping("/questions/{id}")
+    // public String deleteQuestionById(@PathVariable Long id) {
+    //     if (!questionService.getQuestionById(id).isPresent()) {
+    //         return "Question with given id not found";
+    //     }
+    //     questionService.deleteQuestionById(id);
+    //     return "Question deleted.";
+    // }
+
     @DeleteMapping("/questions/{id}")
-    public String deleteQuestionById(@PathVariable Long id) {
-        if (!questionService.getQuestionById(id).isPresent()) {
-            return "Question with given id not found";
+    public ResponseEntity<String> deleteQuestionById(@PathVariable Long id) {
+        try {
+            if (!questionService.getQuestionById(id).isPresent()) {
+                return ResponseEntity.ok("Question with given id is not present to delete.");
+            }
+            questionService.deleteQuestionById(id);
+            return ResponseEntity.ok("Question deleted.");
+        } catch (MCQQuestionDeleteException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         }
-        questionService.deleteQuestionById(id);
-        return "Question deleted.";
+    }
+
+    @ExceptionHandler(MCQQuestionDeleteException.class)
+    public ResponseEntity<String> handleQuestionDeleteException(MCQQuestionDeleteException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
     
