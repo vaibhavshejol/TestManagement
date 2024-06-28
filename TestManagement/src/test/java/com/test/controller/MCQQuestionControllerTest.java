@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 
 import com.test.entities.MCQQuestion;
 import com.test.entities.Subcategory;
@@ -89,10 +90,19 @@ public class MCQQuestionControllerTest {
     @Test
     public void deleteQuestionById() {
 
-        when(questionController.deleteQuestionById(1L)).thenReturn("Question deleted.");
+        ResponseEntity<String> expectedResponse = ResponseEntity.ok("Question deleted.");
+        when(questionController.deleteQuestionById(1L)).thenReturn(expectedResponse);
 
-        String result=questionController.deleteQuestionById(1L);
-        assertEquals("Question deleted.", result);
+        // Calling the controller method
+        ResponseEntity<String> response = questionController.deleteQuestionById(1L);
+
+        // Asserting the response
+        assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
+        assertEquals(expectedResponse.getBody(), response.getBody());
+
+        // when(questionController.deleteQuestionById(1L)).thenReturn("Question deleted.");
+        // String result=questionController.deleteQuestionById(1L);
+        // assertEquals("Question deleted.", result);
     }
 
 }
