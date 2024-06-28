@@ -1,0 +1,333 @@
+{
+	"info": {
+		"_postman_id": "7346f3fd-e3d5-4600-9076-783789e3b4e6",
+		"name": "TestManagementAPIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36209248"
+	},
+	"item": [
+		{
+			"name": "createCategory",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"categoryId\": 1,\r\n    \"categoryName\": \"Java\",\r\n    \"categoryDescription\": \"Core Java category\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/category",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllCategory",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/category",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCategoryById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/category/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateCategoryById",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"categoryId\": 3,\r\n    \"categoryName\": \"Spring Boot\",\r\n    \"categoryDescription\": \"Spring Boot Framework category description\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/category/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteCategoryById",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/category/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createSubcategory",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"subcategoryId\": 1,\r\n    \"subcategoryName\": \"Collection\",\r\n    \"subcategoryDescription\": \"Collection form Java\",\r\n    \"category\": {\r\n        \"categoryId\": 1,\r\n        \"categoryName\": \"Java\",\r\n        \"categoryDescription\": \"Core Java category\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/subcategory",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"subcategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllSubcategory",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/subcategory",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"subcategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getSubcategoryById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/subcategory/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"subcategory",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateSubcategoryById",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"subcategoryId\": 4,\r\n    \"subcategoryName\": \"Annotation\",\r\n    \"subcategoryDescription\": \"Annotations in Spring Boot\",\r\n    \"category\": {\r\n        \"categoryId\": 3,\r\n        \"categoryName\": \"Spring Boot\",\r\n        \"categoryDescription\": \"Spring Boot Framework category\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/subcategory/4",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"subcategory",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteSubcategoryById",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/subcategory/4",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"subcategory",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createQuestion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"subcategory\":{\r\n\t\t\"subcategoryId\":4,\r\n        \"subcategoryName\":\"Annotation\",\r\n        \"subcategoryDescription\": \"Annotations in Spring\",\r\n        \"category\": {\r\n            \"categoryId\": 3,\r\n            \"categoryName\": \"Spring Boot\",\r\n            \"categoryDescription\": \"Spring Boot Framework category\"\r\n        }\r\n\t},\r\n    \"id\":1,\r\n\t\"question\": \"In Spring Boot @RestController annotation is equivalent to\",\r\n\t\"optionOne\": \"@Controller and @PostMapping\",\r\n\t\"optionTwo\": \"@Controller and @Component\",\r\n\t\"optionThree\": \"@Controller and @ResponseBody\",\r\n\t\"optionFour\": \"@Controller and @ResponseStatus\",\r\n\t\"correctOption\": \"@Controller and @ResponseBody\",\r\n\t\"positiveMark\": \"3\",\r\n\t\"negativeMark\": \"-1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/questions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"questions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllQuestions",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "getQuestionById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/questions/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"questions",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateQuestionById",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"question\": \"In Spring Boot @RestController is combination of ?\",\r\n    \"optionOne\": \"@Controller and @PostMapping\",\r\n    \"optionTwo\": \"@Controller and @Component\",\r\n    \"optionThree\": \"@Controller and @ResponseBody\",\r\n    \"optionFour\": \"@Controller and @ResponseStatus\",\r\n    \"correctOption\": \"@Controller and @ResponseBody\",\r\n    \"positiveMark\": 3,\r\n    \"negativeMark\": -1,\r\n    \"subcategory\": {\r\n        \"subcategoryId\": 5,\r\n        \"subcategoryName\": \"Annotation\",\r\n        \"subcategoryDescription\": \"Annotations in Spring\",\r\n        \"category\": {\r\n            \"categoryId\": 6,\r\n            \"categoryName\": \"Spring Boot\",\r\n            \"categoryDescription\": \"Spring Boot Framework category\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/questions/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"questions",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteQuestionById",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/questions/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"questions",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
