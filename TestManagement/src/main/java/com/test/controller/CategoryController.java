@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.test.entities.Category;
-import com.test.entities.MCQQuestion;
-import com.test.service.MCQQuestionService;
+import com.test.service.CategoryService;
 
 import java.util.*;
 
@@ -23,7 +22,7 @@ public class CategoryController {
 
     @PostMapping("/category")
     public Category createCategory(@RequestBody Category category) {
-        return category;
+        return categoryService.createCategory(category);
     }
 
     @GetMapping("/category")
