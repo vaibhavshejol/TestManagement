@@ -35,14 +35,24 @@ dependencies {
 
 	//Swagger dependencies
 
-	  // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-   implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
-// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
-implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+   	implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
+	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
 
     // testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
     // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
     // testImplementation 'org.mockito:mockito-junit-jupiter:4.3.1'
+
+	// https://mvnrepository.com/artifact/org.apache.poi/poi
+	implementation("org.apache.poi:poi:3.9")
+
+	// https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+	implementation("org.apache.poi:poi-ooxml:3.9")
+
+	// https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-schemas
+	implementation("org.apache.poi:poi-ooxml-schemas:3.9")
+
 }
 
 tasks.named('test') {
