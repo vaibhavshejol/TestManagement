@@ -25,30 +25,34 @@ public class SubcategoryController {
     private SubcategoryService subcategoryService;
     
     @PostMapping("/subcategory")
-    public Subcategory createSubcategory(@RequestBody Subcategory subcategory) {
-        return subcategoryService.createSubcategory(subcategory);
+    public ResponseEntity<Subcategory> createSubcategory(@RequestBody Subcategory subcategory) {
+        Subcategory createdSubcategory = subcategoryService.createSubcategory(subcategory);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdSubcategory);
     }
 
     @GetMapping("/subcategory")
-    public List<Subcategory> getAllSubcategory() {
-       
-        return subcategoryService.getAllSubcategory();
+    public ResponseEntity<List<Subcategory>> getAllSubcategory() {
+        List<Subcategory> subcategories = subcategoryService.getAllSubcategory();
+        return ResponseEntity.ok(subcategories);
     }
 
     @GetMapping("/subcategory/{id}")
-    public Optional<Subcategory> getSubcategoryById(@PathVariable Long id) {
-        return subcategoryService.getSubcategoryById(id);
+    public ResponseEntity<Subcategory> getSubcategoryById(@PathVariable Long id) {
+        Optional<Subcategory> subcategory = subcategoryService.getSubcategoryById(id);
+        return subcategory.map(ResponseEntity::ok)
+                         .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/subcategory/{id}")
-    public Subcategory updateSubcategoryById(@PathVariable Long id, @RequestBody Subcategory subcategory) {
+    public ResponseEntity<Subcategory> updateSubcategoryById(@PathVariable Long id, @RequestBody Subcategory subcategory) {
         if (!subcategoryService.getSubcategoryById(id).isPresent()) {
             Subcategory notFoundSubcategory = new Subcategory();
             notFoundSubcategory.setSubcategoryName("Subcategory with given id not found.");
-            return notFoundSubcategory;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFoundSubcategory);
         }
         subcategory.setSubcategoryId(id);
-        return subcategoryService.updateSubcategoryById(subcategory);
+        Subcategory updatedSubcategory = subcategoryService.updateSubcategoryById(subcategory);
+        return ResponseEntity.ok(updatedSubcategory);
     }
 
     // @DeleteMapping("/subcategory/{id}")

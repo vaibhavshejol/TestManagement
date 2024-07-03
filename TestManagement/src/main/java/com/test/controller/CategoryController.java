@@ -1,10 +1,10 @@
 package com.test.controller;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,65 +16,73 @@ import com.test.entities.Category;
 import com.test.exception.CategoryDeleteException;
 import com.test.service.CategoryService;
 
+import org.slf4j.Logger;
+
 import java.util.*;
 
 @RestController
 public class CategoryController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
+
     
     @Autowired
     private CategoryService categoryService;
 
     @PostMapping("/category")
-    public Category createCategory(@RequestBody Category category) {
-        return categoryService.createCategory(category);
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+        logger.info("Creating category: {}", category.getCategoryName());
+        Category createdCategory = categoryService.createCategory(category);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 
     @GetMapping("/category")
-    public List<Category> getAllCategory() {
-       
-        return categoryService.getAllCategory();
+    public ResponseEntity<List<Category>> getAllCategory() {
+        logger.info("Fetching all categories");
+        List<Category> categories = categoryService.getAllCategory();
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/category/{id}")
-    public Optional<Category> getCategoryById(@PathVariable Long id) {
-        return categoryService.getCategoryById(id);
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+        logger.info("Fetching category with id: {}", id);
+        Optional<Category> category = categoryService.getCategoryById(id);
+        return category.map(ResponseEntity::ok)
+                       .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/category/{id}")
-    public Category updateCategoryById(@PathVariable Long id, @RequestBody Category category) {
+// @GetMapping("/category/{id}")
+// public Optional<Category> getCategoryById(@PathVariable Long id) {
+//     logger.info("Fetching category with id: {}", id);
+//     return categoryService.getCategoryById(id);
+// }
+
+@PutMapping("/category/{id}")
+public ResponseEntity<Category> updateCategoryById(@PathVariable Long id, @RequestBody Category category) {
+    logger.info("Updating category with id: {}", id);
+    if (!categoryService.getCategoryById(id).isPresent()) {
+        Category notFoundCategory = new Category();
+        notFoundCategory.setCategoryName("Category with given id not found.");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFoundCategory);
+    }
+    category.setCategoryId(id);
+    Category updatedCategory = categoryService.updateCategoryById(category);
+    return ResponseEntity.ok(updatedCategory);
+}
+
+@DeleteMapping("/category/{id}")
+public ResponseEntity<String> deleteCategoryById(@PathVariable Long id) {
+    try {
+        logger.info("Deleting category with id: {}", id);
         if (!categoryService.getCategoryById(id).isPresent()) {
-            Category notFoundCategory = new Category();
-            notFoundCategory.setCategoryName("Category with given id not found.");
-            return notFoundCategory;
+            return ResponseEntity.ok("Category with given id is not present to delete.");
         }
-        category.setCategoryId(id);
-        return categoryService.updateCategoryById(category);
-    }
-
-    // @DeleteMapping("/category/{id}")
-    // public String deleteCategoryById(@PathVariable Long id) {
-    //     if (!categoryService.getCategoryById(id).isPresent()) {
-    //         return "Category with given id not found";
-    //     }
-    //     categoryService.deleteCategoryById(id);
-    //     return "Category deleted.";
-    // }
-
-    @DeleteMapping("/category/{id}")
-    public ResponseEntity<String> deleteCategoryById(@PathVariable Long id) {
-        try {
-            if (!categoryService.getCategoryById(id).isPresent()) {
-                 return ResponseEntity.ok("Category with given id is not present to delete.");
-            }
-            categoryService.deleteCategoryById(id);
-            return ResponseEntity.ok("Category deleted.");
-        } catch (CategoryDeleteException ex) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-        }
-    }
-
-    @ExceptionHandler(CategoryDeleteException.class)
-    public ResponseEntity<String> handleCategoryDeleteException(CategoryDeleteException ex) {
+        categoryService.deleteCategoryById(id);
+        return ResponseEntity.ok("Category deleted.");
+    } catch (CategoryDeleteException ex) {
+        logger.error("Failed to delete category with id: {}", id, ex);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
+}
+
 }

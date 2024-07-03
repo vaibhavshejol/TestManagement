@@ -5,6 +5,9 @@ import com.test.entities.Category;
 import java.util.*;
 
 public interface CategoryService {
+
+    Long getCategoryIdByCategoryName(String categoryName);
+
     Category createCategory(Category category);
 
     List<Category> getAllCategory();

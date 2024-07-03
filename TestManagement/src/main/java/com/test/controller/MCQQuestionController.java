@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.test.entities.MCQQuestion;
 import com.test.exception.MCQQuestionDeleteException;
@@ -26,30 +28,58 @@ public class MCQQuestionController {
     private MCQQuestionService questionService;
 
     @PostMapping("/questions")
-    public MCQQuestion createQuestion(@RequestBody MCQQuestion question) {
-        return questionService.createQuestion(question);
+    public ResponseEntity<MCQQuestion> createQuestion(@RequestBody MCQQuestion question) {
+        MCQQuestion createdQuestion = questionService.createQuestion(question);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
+    }
+
+    @PostMapping("/uploadBulkQuestions")
+    public ResponseEntity<Map<String, List<Object>>> uploadBulkQuestions(@RequestParam("file") MultipartFile file) {
+        Map<String, List<Object>> map=new LinkedHashMap<>();
+        try {
+            if(!file.getOriginalFilename().endsWith(".xlsx")){
+                List<Object> errorList=new ArrayList<>();
+                errorList.add("Sorry... File you provided is not a type of \".xlsx\" extension.");
+                map.put("Error message", errorList);
+                return ResponseEntity.badRequest().body(map);
+            }
+            List<Object> sucssessList=new ArrayList<>();
+            sucssessList.add("File uploaded and questions stored successfully.");
+            map.put("Success Message", sucssessList);
+            map.putAll(questionService.uploadBulkQuestions(file));;
+            
+            return ResponseEntity.ok().body(map);
+        } catch (Exception ex) {
+            List<Object> exceptionList=new ArrayList<>();
+                exceptionList.add("Failed to process Excel file: "+ ex.getMessage());
+                map.put("Error message", exceptionList);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(map);
+        }
     }
 
     @GetMapping("/questions")
-    public List<MCQQuestion> getAllQuestions() {
-       
-        return questionService.getAllQuestions();
+    public ResponseEntity<List<MCQQuestion>> getAllQuestions() {
+        List<MCQQuestion> questions = questionService.getAllQuestions();
+        return ResponseEntity.ok(questions);
     }
 
     @GetMapping("/questions/{id}")
-    public Optional<MCQQuestion> getQuestionById(@PathVariable Long id) {
-        return questionService.getQuestionById(id);
+    public ResponseEntity<MCQQuestion> getQuestionById(@PathVariable Long id) {
+        Optional<MCQQuestion> question = questionService.getQuestionById(id);
+        return question.map(ResponseEntity::ok)
+                       .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/questions/{id}")
-    public MCQQuestion updateQuestionById(@PathVariable Long id, @RequestBody MCQQuestion question) {
+    public ResponseEntity<MCQQuestion> updateQuestionById(@PathVariable Long id, @RequestBody MCQQuestion question) {
         if (!questionService.getQuestionById(id).isPresent()) {
             MCQQuestion notFoundQuestion = new MCQQuestion();
             notFoundQuestion.setQuestion("Question with given id not found.");
-            return notFoundQuestion;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFoundQuestion);
         }
         question.setId(id);
-        return questionService.updateQuestionById(question);
+        MCQQuestion updatedQuestion = questionService.updateQuestionById(question);
+        return ResponseEntity.ok(updatedQuestion);
     }
 
     // @DeleteMapping("/questions/{id}")

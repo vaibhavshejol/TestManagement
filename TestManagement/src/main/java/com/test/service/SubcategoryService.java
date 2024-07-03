@@ -5,6 +5,9 @@ import com.test.entities.Subcategory;
 import java.util.*;
 
 public interface SubcategoryService {
+
+    public Long getSubcategoryIdBySubcategoryName(String categoryName);
+
     Subcategory createSubcategory(Subcategory subcategory);
 
     List<Subcategory> getAllSubcategory();

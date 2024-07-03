@@ -42,7 +42,7 @@ public class MCQQuestion {
     private int positiveMark;
 
     @Column(name = "negative_mark")
-    private int negativeMark;
+    private Integer negativeMark;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "subcategory_id", referencedColumnName = "subcategory_id")
