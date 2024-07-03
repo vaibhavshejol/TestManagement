@@ -328,6 +328,34 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "uploadBulkQuestions",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/vaibhav.shejol/Downloads/QuestionBank.xlsx"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/uploadBulkQuestions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"uploadBulkQuestions"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
