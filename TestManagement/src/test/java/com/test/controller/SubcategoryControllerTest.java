@@ -33,6 +33,7 @@ public class SubcategoryControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    //test case for create subcategory
     @Test
     public void testCreateSubcategory() {
         Subcategory subcategory = new Subcategory();
