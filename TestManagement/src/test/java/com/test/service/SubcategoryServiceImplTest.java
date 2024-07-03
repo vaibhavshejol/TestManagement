@@ -34,6 +34,7 @@ public class SubcategoryServiceImplTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    //test case for create or add subcategory
     @Test
     public void testCreateSubcategory() {
         Subcategory newSubcategory = new Subcategory();
