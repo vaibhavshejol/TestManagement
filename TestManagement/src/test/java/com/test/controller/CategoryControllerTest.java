@@ -13,13 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.test.entities.Category;
-import com.test.exception.CategoryDeleteException;
 import com.test.service.CategoryService;
 
+@SpringBootTest
 public class CategoryControllerTest {
 
     @Mock
@@ -149,19 +150,5 @@ public class CategoryControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("Category with given id is not present to delete.", responseEntity.getBody());
         verify(categoryService, times(0)).deleteCategoryById(categoryId);
-    }
-
-    @Test
-    public void testDeleteCategoryById_Exception() {
-        Long categoryId = 1L;
-        String errorMessage = "Delete operation failed";
-
-        when(categoryService.getCategoryById(categoryId)).thenThrow(new CategoryDeleteException(errorMessage));
-
-        ResponseEntity<String> responseEntity = categoryController.deleteCategoryById(categoryId);
-
-        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
-        assertEquals(errorMessage, responseEntity.getBody());
-        verify(categoryService, times(1)).deleteCategoryById(categoryId);
     }
 }

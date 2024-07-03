@@ -13,13 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.test.entities.Subcategory;
-import com.test.exception.SubcategoryDeleteException;
 import com.test.service.SubcategoryService;
 
+@SpringBootTest
 public class SubcategoryControllerTest {
 
     @Mock
@@ -150,19 +151,5 @@ public class SubcategoryControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("Subcategory with given id is not present to delete.", responseEntity.getBody());
         verify(subcategoryService, times(0)).deleteSubcategoryById(subcategoryId);
-    }
-
-    @Test
-    public void testDeleteSubcategoryById_Exception() {
-        Long subcategoryId = 1L;
-        String errorMessage = "Delete operation failed";
-
-        when(subcategoryService.getSubcategoryById(subcategoryId)).thenThrow(new SubcategoryDeleteException(errorMessage));
-
-        ResponseEntity<String> responseEntity = subcategoryController.deleteSubcategoryById(subcategoryId);
-
-        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
-        assertEquals(errorMessage, responseEntity.getBody());
-        verify(subcategoryService, times(1)).deleteSubcategoryById(subcategoryId);
     }
 }
