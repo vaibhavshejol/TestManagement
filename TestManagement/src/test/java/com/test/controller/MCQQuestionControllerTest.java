@@ -1,6 +1,7 @@
 package com.test.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -85,6 +86,8 @@ public class MCQQuestionControllerTest {
 
         when(questionService.updateQuestionById(any(MCQQuestion.class))).thenReturn(expectedQuestion);
         assertEquals(1, expectedQuestion.getId());
+        
+        assertNotEquals(2, expectedQuestion.getId());
     }
 
     @Test
@@ -99,6 +102,8 @@ public class MCQQuestionControllerTest {
         // Asserting the response
         assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
         assertEquals(expectedResponse.getBody(), response.getBody());
+
+
 
         // when(questionController.deleteQuestionById(1L)).thenReturn("Question deleted.");
         // String result=questionController.deleteQuestionById(1L);

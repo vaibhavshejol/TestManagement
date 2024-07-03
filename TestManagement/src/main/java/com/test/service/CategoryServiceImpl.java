@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.test.entities.Category;
 import com.test.exception.CategoryDeleteException;
+import com.test.exception.CategoryDuplicateException;
 import com.test.repository.CategoryRepository;
 
 @Service
@@ -28,6 +29,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category createCategory(Category category) {
+        Long id=repo.findCategoryIdByCategoryName(category.getCategoryName());
+        if(id!=null){
+            throw new CategoryDuplicateException("Category with name "+category.getCategoryName()+" is already present.");
+        }
         logger.info("Creating category: {}", category.getCategoryName());
         return repo.save(category);
     }

@@ -18,23 +18,33 @@ import com.test.entities.MCQQuestion;
 import com.test.exception.MCQQuestionDeleteException;
 import com.test.service.MCQQuestionService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 @RestController
 public class MCQQuestionController {
     
+     private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
     @Autowired
     private MCQQuestionService questionService;
 
     @PostMapping("/questions")
-    public ResponseEntity<MCQQuestion> createQuestion(@RequestBody MCQQuestion question) {
-        MCQQuestion createdQuestion = questionService.createQuestion(question);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
+    public ResponseEntity<?> createQuestion(@RequestBody MCQQuestion question) {
+        logger.info("Request recieved for creating question: {}", question.getQuestion());
+        try{
+            MCQQuestion createdQuestion = questionService.createQuestion(question);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
+        }catch(Exception ex){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+        }
     }
 
     @PostMapping("/uploadBulkQuestions")
     public ResponseEntity<Map<String, List<Object>>> uploadBulkQuestions(@RequestParam("file") MultipartFile file) {
+        logger.info("Request recieved for upload bulk questions.");
         Map<String, List<Object>> map=new LinkedHashMap<>();
         try {
             if(!file.getOriginalFilename().endsWith(".xlsx")){
@@ -59,12 +69,14 @@ public class MCQQuestionController {
 
     @GetMapping("/questions")
     public ResponseEntity<List<MCQQuestion>> getAllQuestions() {
+        logger.info("Request recieved for get all questions.");
         List<MCQQuestion> questions = questionService.getAllQuestions();
         return ResponseEntity.ok(questions);
     }
 
     @GetMapping("/questions/{id}")
     public ResponseEntity<MCQQuestion> getQuestionById(@PathVariable Long id) {
+        logger.info("Request recieved for fetch question with id: {}", id);
         Optional<MCQQuestion> question = questionService.getQuestionById(id);
         return question.map(ResponseEntity::ok)
                        .orElse(ResponseEntity.notFound().build());
@@ -72,6 +84,7 @@ public class MCQQuestionController {
 
     @PutMapping("/questions/{id}")
     public ResponseEntity<MCQQuestion> updateQuestionById(@PathVariable Long id, @RequestBody MCQQuestion question) {
+        logger.info("Request recieved for update question with id: {}", id);
         if (!questionService.getQuestionById(id).isPresent()) {
             MCQQuestion notFoundQuestion = new MCQQuestion();
             notFoundQuestion.setQuestion("Question with given id not found.");
@@ -93,6 +106,7 @@ public class MCQQuestionController {
 
     @DeleteMapping("/questions/{id}")
     public ResponseEntity<String> deleteQuestionById(@PathVariable Long id) {
+        logger.info("Request recieved for delete question with id: {}", id);
         try {
             if (!questionService.getQuestionById(id).isPresent()) {
                 return ResponseEntity.ok("Question with given id is not present to delete.");

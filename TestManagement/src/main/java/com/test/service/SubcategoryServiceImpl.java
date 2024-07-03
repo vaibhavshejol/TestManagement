@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.test.entities.Subcategory;
 import com.test.exception.SubcategoryDeleteException;
+import com.test.exception.SubcategoryDuplicateException;
 import com.test.repository.SubcategoryRepository;
 
 import org.slf4j.Logger;
@@ -25,8 +26,13 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     public Long getSubcategoryIdBySubcategoryName(String subcategoryName) {
         return repo.findSubcategoryIdBySubcategoryName(subcategoryName);
     }
+
     @Override
     public Subcategory createSubcategory(Subcategory subcategory) {
+        Long id=repo.findSubcategoryIdBySubcategoryName(subcategory.getSubcategoryName());
+        if(id!=null){
+            throw new SubcategoryDuplicateException("Subcategory with name "+subcategory.getSubcategoryName()+" is already present");
+        }
         logger.info("Creating subcategory: {}", subcategory.getSubcategoryName());
         return repo.save(subcategory);
     }

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.test.entities.MCQQuestion;
 import com.test.entities.Subcategory;
 import com.test.exception.MCQQuestionDeleteException;
+import com.test.exception.MCQQuestionDuplicateException;
 import com.test.repository.MCQQuestionRepository;
 
 import org.slf4j.Logger;
@@ -41,6 +42,11 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
 
     @Override
     public MCQQuestion createQuestion(MCQQuestion question) {
+        Long id=repo.findQuestionIdByQuestionName(question.getQuestion());
+        if(id!=null){
+            throw new MCQQuestionDuplicateException("MCQ question with "+question.getQuestion()+" is already present.");
+        }
+        logger.info("MCQ Question creation started.");
         return repo.save(question);
     }
 
@@ -54,6 +60,10 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
 
         List <Object> faildSubcategoryList=new ArrayList<Object>();
         faildSubcategoryList.add("Following subcategory not present in database. So questions which contain following subcategory not added in database.");
+
+        List<Object> alreadyPresentQuestionList=new ArrayList<Object>();
+        alreadyPresentQuestionList.add("Following questions already present in database.");
+
         Workbook workbook=null;
         try {
             workbook = new XSSFWorkbook(file.getInputStream());
@@ -85,7 +95,17 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
             Optional<Subcategory> subcategory=subcategoryService.getSubcategoryById(subcategoryId);
 
             question.setSubcategory(subcategory.get());
-            question.setQuestion(row.getCell(3).getStringCellValue());
+
+            String questionString=row.getCell(3).getStringCellValue();
+
+            Long id=repo.findQuestionIdByQuestionName(questionString);
+            if(id!=null){
+                alreadyPresentQuestionList.add("Q.Id "+id+" "+questionString);
+                logger.info("Skiped question {} because already present in database",questionString);
+                continue;
+            }
+
+            question.setQuestion(questionString);
             question.setOptionOne(row.getCell(4).getStringCellValue());
             question.setOptionTwo(row.getCell(5).getStringCellValue());
             question.setOptionThree(row.getCell(6).getStringCellValue());
@@ -116,6 +136,9 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
         }
         if(faildSubcategoryList.size()>1){
             map.put("Subcategory", faildSubcategoryList);
+        }
+        if(alreadyPresentQuestionList.size()>1){
+            map.put("Questions", alreadyPresentQuestionList);
         }
 
         return map;

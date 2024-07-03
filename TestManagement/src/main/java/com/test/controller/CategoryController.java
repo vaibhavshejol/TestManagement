@@ -30,22 +30,26 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping("/category")
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        logger.info("Creating category: {}", category.getCategoryName());
-        Category createdCategory = categoryService.createCategory(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
+    public ResponseEntity<?> createCategory(@RequestBody Category category) {
+        logger.info("Request recieved for creating category: {}", category.getCategoryName());
+        try{
+            Category createdCategory = categoryService.createCategory(category);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
+        }catch(Exception ex){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+        }
     }
 
     @GetMapping("/category")
     public ResponseEntity<List<Category>> getAllCategory() {
-        logger.info("Fetching all categories");
+        logger.info("Request recieved for fetching all categories");
         List<Category> categories = categoryService.getAllCategory();
         return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/category/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
-        logger.info("Fetching category with id: {}", id);
+        logger.info("Request recieved for fetching category with id: {}", id);
         Optional<Category> category = categoryService.getCategoryById(id);
         return category.map(ResponseEntity::ok)
                        .orElse(ResponseEntity.notFound().build());
@@ -59,7 +63,7 @@ public class CategoryController {
 
 @PutMapping("/category/{id}")
 public ResponseEntity<Category> updateCategoryById(@PathVariable Long id, @RequestBody Category category) {
-    logger.info("Updating category with id: {}", id);
+    logger.info("Request received for updating category with id: {}", id);
     if (!categoryService.getCategoryById(id).isPresent()) {
         Category notFoundCategory = new Category();
         notFoundCategory.setCategoryName("Category with given id not found.");
@@ -72,8 +76,8 @@ public ResponseEntity<Category> updateCategoryById(@PathVariable Long id, @Reque
 
 @DeleteMapping("/category/{id}")
 public ResponseEntity<String> deleteCategoryById(@PathVariable Long id) {
+    logger.info("Request received for deleting category with id: {}", id);
     try {
-        logger.info("Deleting category with id: {}", id);
         if (!categoryService.getCategoryById(id).isPresent()) {
             return ResponseEntity.ok("Category with given id is not present to delete.");
         }
