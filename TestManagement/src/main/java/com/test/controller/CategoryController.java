@@ -25,10 +25,10 @@ public class CategoryController {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
-    
     @Autowired
     private CategoryService categoryService;
 
+    //API for create or save category
     @PostMapping("/category")
     public ResponseEntity<?> createCategory(@RequestBody Category category) {
         logger.info("Request recieved for creating category: {}", category.getCategoryName());
