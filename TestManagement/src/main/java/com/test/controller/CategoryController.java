@@ -32,12 +32,8 @@ public class CategoryController {
     @PostMapping("/category")
     public ResponseEntity<?> createCategory(@RequestBody Category category) {
         logger.info("Request recieved for creating category: {}", category.getCategoryName());
-        try{
-            Category createdCategory = categoryService.createCategory(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
-        }catch(Exception ex){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-        }
+        Category createdCategory = categoryService.createCategory(category);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 
     @GetMapping("/category")
@@ -51,8 +47,7 @@ public class CategoryController {
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
         logger.info("Request recieved for fetching category with id: {}", id);
         Optional<Category> category = categoryService.getCategoryById(id);
-        return category.map(ResponseEntity::ok)
-                       .orElse(ResponseEntity.notFound().build());
+        return category.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
 // @GetMapping("/category/{id}")

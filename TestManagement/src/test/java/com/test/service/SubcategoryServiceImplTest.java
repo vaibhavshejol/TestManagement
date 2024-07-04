@@ -143,7 +143,7 @@ public class SubcategoryServiceImplTest {
         Long subcategoryId = 1L;
         String errorMessage = "Failed to delete subcategory with id: " + subcategoryId;
 
-        doThrow(new RuntimeException("DB connection failed")).when(subcategoryRepository).deleteById(subcategoryId);
+        doThrow(new RuntimeException(errorMessage)).when(subcategoryRepository).deleteById(subcategoryId);
 
         Exception exception = assertThrows(SubcategoryDeleteException.class, () -> {
             subcategoryService.deleteSubcategoryById(subcategoryId);

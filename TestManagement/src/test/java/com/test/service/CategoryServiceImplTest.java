@@ -142,7 +142,7 @@ public class CategoryServiceImplTest {
         Long categoryId = 1L;
         String errorMessage = "Failed to delete category with id: " + categoryId;
 
-        doThrow(new RuntimeException("DB connection failed")).when(categoryRepository).deleteById(categoryId);
+        doThrow(new RuntimeException(errorMessage)).when(categoryRepository).deleteById(categoryId);
 
         Exception exception = assertThrows(CategoryDeleteException.class, () -> {
             categoryService.deleteCategoryById(categoryId);
