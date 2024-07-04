@@ -21,6 +21,12 @@ public class GlobalExceptionHandler extends Exception{
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+    
+    @ExceptionHandler
+    public ResponseEntity<Object> categoryDeleteException(CategoryDeleteException ex){
+        ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler
     public ResponseEntity<Object> subcategoryDuplicateException(SubcategoryDuplicateException ex){
@@ -33,6 +39,12 @@ public class GlobalExceptionHandler extends Exception{
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+    
+    @ExceptionHandler
+    public ResponseEntity<Object> subcategoryDeleteException(SubcategoryDeleteException ex){
+        ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler
     public ResponseEntity<Object> mcqQuestionDuplicateException(MCQQuestionDuplicateException ex){
@@ -44,5 +56,11 @@ public class GlobalExceptionHandler extends Exception{
     public ResponseEntity<Object> mcqQuestionNotFoundException(MCQQuestionNotFoundException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler
+    public ResponseEntity<Object> mcqQuestionDeleteException(MCQQuestionDeleteException ex){
+        ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 }

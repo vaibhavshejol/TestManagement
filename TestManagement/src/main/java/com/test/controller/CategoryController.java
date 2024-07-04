@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.test.entities.Category;
-import com.test.exception.CategoryDeleteException;
 import com.test.service.CategoryService;
 
 import org.slf4j.Logger;
@@ -47,7 +46,7 @@ public class CategoryController {
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
         logger.info("Request recieved for fetching category with id: {}", id);
         Optional<Category> category = categoryService.getCategoryById(id);
-        return category.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.status(HttpStatus.FOUND).body(category.get());
     }
 
 // @GetMapping("/category/{id}")
@@ -59,29 +58,15 @@ public class CategoryController {
 @PutMapping("/category/{id}")
 public ResponseEntity<Category> updateCategoryById(@PathVariable Long id, @RequestBody Category category) {
     logger.info("Request received for updating category with id: {}", id);
-    if (!categoryService.getCategoryById(id).isPresent()) {
-        Category notFoundCategory = new Category();
-        notFoundCategory.setCategoryName("Category with given id not found.");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFoundCategory);
-    }
-    category.setCategoryId(id);
-    Category updatedCategory = categoryService.updateCategoryById(category);
+    Category updatedCategory = categoryService.updateCategoryById(id, category);
     return ResponseEntity.ok(updatedCategory);
 }
 
 @DeleteMapping("/category/{id}")
 public ResponseEntity<String> deleteCategoryById(@PathVariable Long id) {
     logger.info("Request received for deleting category with id: {}", id);
-    try {
-        if (!categoryService.getCategoryById(id).isPresent()) {
-            return ResponseEntity.ok("Category with given id is not present to delete.");
-        }
-        categoryService.deleteCategoryById(id);
-        return ResponseEntity.ok("Category deleted.");
-    } catch (CategoryDeleteException ex) {
-        logger.error("Failed to delete category with id: {}", id, ex);
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-    }
+    categoryService.deleteCategoryById(id);
+    return ResponseEntity.ok("Category deleted.");
 }
 
 }

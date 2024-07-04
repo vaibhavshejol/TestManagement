@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.test.entities.Category;
 import com.test.exception.CategoryDeleteException;
 import com.test.exception.CategoryDuplicateException;
+import com.test.exception.CategoryNotFoundException;
 import com.test.repository.CategoryRepository;
 
 @Service
@@ -31,7 +32,8 @@ public class CategoryServiceImpl implements CategoryService {
     public Category createCategory(Category category) {
         Long id=repo.findCategoryIdByCategoryName(category.getCategoryName());
         if(id!=null){
-            throw new CategoryDuplicateException("Category with name "+category.getCategoryName()+" is already present.");
+            StringBuilder message=new StringBuilder("Category with name ").append(category.getCategoryName()).append(" already exists.");
+            throw new CategoryDuplicateException(message.toString());
         }
         logger.info("Creating category: {}", category.getCategoryName());
         return repo.save(category);
@@ -40,24 +42,42 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getAllCategory() {
         logger.info("Fetching all categories");
-        return repo.findAll();
+        List<Category> categoryList = repo.findAll();
+        if(categoryList==null){
+            throw new CategoryNotFoundException("Categories not present in database");
+        }
+        return categoryList;
     }
 
     @Override
     public Optional<Category> getCategoryById(Long id) {
         logger.info("Fetching category with id: {}", id);
-        return repo.findById(id);
+        Optional<Category> category = repo.findById(id);
+        if(!category.isPresent()){
+            StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present.");
+            throw new CategoryNotFoundException(message.toString());
+        }
+        return category;
     }
 
     @Override
-    public Category updateCategoryById(Category category) {
-        logger.info("Updating category with id: {}", category.getCategoryId());
+    public Category updateCategoryById(Long id, Category category) {
+        logger.info("Updating category with id: {}", id);
+         if (!this.getCategoryById(id).isPresent()) {
+            StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present.");
+            throw new CategoryNotFoundException(message.toString());
+        }
+        category.setCategoryId(id);
         return repo.save(category);
     }
 
     @Override
     public void deleteCategoryById(Long id) {
         try {
+            if (!this.getCategoryById(id).isPresent()) {
+                StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present.");
+                throw new CategoryNotFoundException(message.toString());
+            }
             repo.deleteById(id);
         } catch (Exception ex) {
             String errorMessage = "Failed to delete category with id: " + id;
