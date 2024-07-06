@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.bnt.entities.Category;
 import com.bnt.exception.DeleteException;
 import com.bnt.exception.DataDuplicateException;
-import com.bnt.exception.CategoryNotFoundException;
+import com.bnt.exception.DataNotFoundException;
 import com.bnt.exception.IllegalArgumentException;
 import com.bnt.repository.CategoryRepository;
 import com.bnt.service.CategoryService;
@@ -45,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Fetching all categories in category service implement.");
         List<Category> categoryList = categoryRepository.findAll();
         if(categoryList==null){
-            throw new CategoryNotFoundException("Categories not present in database");
+            throw new DataNotFoundException("Categories not present in database");
         }
         return categoryList;
     }
@@ -56,7 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
         Optional<Category> category = categoryRepository.findById(id);
         if(!category.isPresent()){
             StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present.");
-            throw new CategoryNotFoundException(message.toString());
+            throw new DataNotFoundException(message.toString());
         }
         return category;
     }
@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Updating category in category service implement with id: {}", id);
          if (!this.getCategoryById(id).isPresent()) {
             StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present.");
-            throw new CategoryNotFoundException(message.toString());
+            throw new DataNotFoundException(message.toString());
         }
         category.setCategoryId(id);
         return categoryRepository.save(category);
@@ -83,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             if (!this.getCategoryById(id).isPresent()) {
                 StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present.");
-                throw new CategoryNotFoundException(message.toString());
+                throw new DataNotFoundException(message.toString());
             }
             categoryRepository.deleteById(id);
         } catch (Exception ex) {

@@ -17,7 +17,7 @@ public class GlobalExceptionHandler extends Exception{
     }
     
     @ExceptionHandler
-    public ResponseEntity<Object> categoryNotFoundException(CategoryNotFoundException ex){
+    public ResponseEntity<Object> categoryNotFoundException(DataNotFoundException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
