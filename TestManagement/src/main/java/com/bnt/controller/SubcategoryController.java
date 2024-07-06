@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bnt.entities.Subcategory;
-import com.bnt.exception.SubcategoryDeleteException;
+import com.bnt.exception.DataDeleteException;
 import com.bnt.service.SubcategoryService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,20 +47,13 @@ public class SubcategoryController {
     public ResponseEntity<Subcategory> getSubcategoryById(@PathVariable Long id) {
         log.info("Request recieved for fetch subcategory with id: {}", id);
         Optional<Subcategory> subcategory = subcategoryService.getSubcategoryById(id);
-        return subcategory.map(ResponseEntity::ok)
-                         .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(subcategory.get());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Subcategory> updateSubcategoryById(@PathVariable Long id, @RequestBody Subcategory subcategory) {
         log.info("Request recieved for update subcategory with id: {}", id);
-        if (!subcategoryService.getSubcategoryById(id).isPresent()) {
-            Subcategory notFoundSubcategory = new Subcategory();
-            notFoundSubcategory.setSubcategoryName("Subcategory with given id not found.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFoundSubcategory);
-        }
-        subcategory.setSubcategoryId(id);
-        Subcategory updatedSubcategory = subcategoryService.updateSubcategoryById(subcategory);
+        Subcategory updatedSubcategory = subcategoryService.updateSubcategoryById(id, subcategory);
         return ResponseEntity.ok(updatedSubcategory);
     }
 
@@ -73,13 +66,13 @@ public class SubcategoryController {
             }
             subcategoryService.deleteSubcategoryById(id);
             return ResponseEntity.ok("Subcategory deleted.");
-        } catch (SubcategoryDeleteException ex) {
+        } catch (DataDeleteException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         }
     }
 
-    @ExceptionHandler(SubcategoryDeleteException.class)
-    public ResponseEntity<String> handleSubcategoryDeleteException(SubcategoryDeleteException ex) {
+    @ExceptionHandler(DataDeleteException.class)
+    public ResponseEntity<String> handleSubcategoryDeleteException(DataDeleteException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

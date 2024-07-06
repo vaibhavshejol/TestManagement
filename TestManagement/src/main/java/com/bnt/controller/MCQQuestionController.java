@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bnt.entities.MCQQuestion;
+import com.bnt.exception.DataDeleteException;
 import com.bnt.service.MCQQuestionService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,15 +41,8 @@ public class MCQQuestionController {
     @PostMapping("/uploadBulkQuestions")
     public ResponseEntity<Map<String, List<Object>>> uploadBulkQuestions(@RequestParam("file") MultipartFile file) {
         log.info("Request recieved in MCQQuestionController for upload bulk questions.");
-        Map<String, List<Object>> map=new LinkedHashMap<>();
-        
-            List<Object> sucssessList=new ArrayList<>();
-            sucssessList.add("File uploaded and questions stored successfully.");
-            map.put("Success Message", sucssessList);
-            map.putAll(questionService.uploadBulkQuestions(file));
-            
-            return ResponseEntity.ok().body(map);
-        
+        Map<String, List<Object>> map=questionService.uploadBulkQuestions(file);
+        return ResponseEntity.ok().body(map);
     }
 
     @GetMapping
@@ -62,39 +56,25 @@ public class MCQQuestionController {
     public ResponseEntity<MCQQuestion> getQuestionById(@PathVariable Long id) {
         log.info("Request recieved in MCQQuestionController for fetch question with id: {}", id);
         Optional<MCQQuestion> question = questionService.getQuestionById(id);
-        return question.map(ResponseEntity::ok)
-                       .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.status(HttpStatus.FOUND).body(question.get());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<MCQQuestion> updateQuestionById(@PathVariable Long id, @RequestBody MCQQuestion question) {
         log.info("Request recieved in MCQQuestionController for update question with id: {}", id);
-        if (!questionService.getQuestionById(id).isPresent()) {
-            MCQQuestion notFoundQuestion = new MCQQuestion();
-            notFoundQuestion.setQuestion("Question with given id not found.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFoundQuestion);
-        }
-        question.setId(id);
-        MCQQuestion updatedQuestion = questionService.updateQuestionById(question);
+        MCQQuestion updatedQuestion = questionService.updateQuestionById(id, question);
         return ResponseEntity.ok(updatedQuestion);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteQuestionById(@PathVariable Long id) {
         log.info("Request recieved in MCQQuestionController for delete question with id: {}", id);
-        try {
-            if (!questionService.getQuestionById(id).isPresent()) {
-                return ResponseEntity.ok("Question with given id is not present to delete.");
-            }
-            questionService.deleteQuestionById(id);
-            return ResponseEntity.ok("Question deleted.");
-        } catch (MCQQuestionDeleteException ex) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-        }
+        questionService.deleteQuestionById(id);
+        return ResponseEntity.ok("Question deleted.");
     }
 
-    @ExceptionHandler(MCQQuestionDeleteException.class)
-    public ResponseEntity<String> handleQuestionDeleteException(MCQQuestionDeleteException ex) {
+    @ExceptionHandler(DataDeleteException.class)
+    public ResponseEntity<String> handleQuestionDeleteException(DataDeleteException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 

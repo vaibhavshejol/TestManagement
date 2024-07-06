@@ -42,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategory() {
-        log.info("Fetching all categories in category service implement.");
+        log.info("Fetching all categories in getAllCategory method in category service implement.");
         List<Category> categoryList = categoryRepository.findAll();
         if(categoryList==null){
             throw new DataNotFoundException("Categories not present in database");
@@ -55,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Fetching category in category service impelemnt with id: {}", id);
         Optional<Category> category = categoryRepository.findById(id);
         if(!category.isPresent()){
-            StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present.");
+            StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present in database.");
             throw new DataNotFoundException(message.toString());
         }
         return category;
@@ -63,15 +63,19 @@ public class CategoryServiceImpl implements CategoryService {
     
     @Override
     public Long getCategoryIdByCategoryName(String categoryName) {
-        log.info("Fetching category id in category service implement for category: {}", categoryName);
-        return categoryRepository.findCategoryIdByCategoryName(categoryName);
+        log.info("Fetching category id in getCategoryIdByCategoryName method in category service implement for category: {}", categoryName);
+        Long id = categoryRepository.findCategoryIdByCategoryName(categoryName);
+        if(id==null){
+            throw new DataNotFoundException("Category with given name "+categoryName+" not present in database.");
+        }
+        return id;
     }
 
     @Override
     public Category updateCategoryById(Long id, Category category) {
         log.info("Updating category in category service implement with id: {}", id);
          if (!this.getCategoryById(id).isPresent()) {
-            StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present.");
+            StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present in database.");
             throw new DataNotFoundException(message.toString());
         }
         category.setCategoryId(id);
@@ -82,14 +86,14 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategoryById(Long id) {
         try {
             if (!this.getCategoryById(id).isPresent()) {
-                StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present.");
+                StringBuilder message=new StringBuilder("Category with Id: ").append(id).append(" not present in database.");
                 throw new DataNotFoundException(message.toString());
             }
             categoryRepository.deleteById(id);
         } catch (Exception ex) {
             String errorMessage = "Failed to delete category with id: " + id;
             log.error(errorMessage, ex);
-            throw new DataDeleteException(errorMessage);
+            throw new DataDeleteException(errorMessage+" "+ex.getMessage());
         }
     }
 }

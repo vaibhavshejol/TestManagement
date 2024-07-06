@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bnt.entities.Subcategory;
-import com.bnt.exception.SubcategoryDeleteException;
-import com.bnt.exception.SubcategoryDuplicateException;
+import com.bnt.exception.DataDeleteException;
+import com.bnt.exception.DataDuplicateException;
+import com.bnt.exception.DataNotFoundException;
 import com.bnt.repository.SubcategoryRepository;
 import com.bnt.service.SubcategoryService;
 
@@ -19,10 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 public class SubcategoryServiceImpl implements SubcategoryService {
 
     @Autowired
-    private SubcategoryRepository repo;
+    private SubcategoryRepository subcategoryRepository;
 
     public Long getSubcategoryIdBySubcategoryName(String subcategoryName) {
-        return repo.findSubcategoryIdBySubcategoryName(subcategoryName);
+        return subcategoryRepository.findSubcategoryIdBySubcategoryName(subcategoryName);
     }
 
     @Override
@@ -32,40 +33,58 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             StringBuilder message=new StringBuilder("Provided subcategory not contain proper data.");
             throw new IllegalArgumentException(message.toString());
         }
-        Long id=repo.findSubcategoryIdBySubcategoryName(subcategory.getSubcategoryName());
+        Long id=subcategoryRepository.findSubcategoryIdBySubcategoryName(subcategory.getSubcategoryName());
         if(id!=null){
-            throw new SubcategoryDuplicateException("Subcategory with name "+subcategory.getSubcategoryName()+" is already present");
+            throw new DataDuplicateException("Subcategory with name "+subcategory.getSubcategoryName()+" is already present");
         }
         log.info("Creating subcategory: {}", subcategory.getSubcategoryName());
-        return repo.save(subcategory);
+        return subcategoryRepository.save(subcategory);
     }
 
     @Override
     public List<Subcategory> getAllSubcategory() {
         log.info("Fetching all subcategories");
-        return repo.findAll();
+        List<Subcategory> subcategoryList = subcategoryRepository.findAll();
+        if(subcategoryList==null){
+            throw new DataNotFoundException("Subcategories not present in database.");
+        }
+        return subcategoryList;
     }
 
     @Override
     public Optional<Subcategory> getSubcategoryById(Long id) {
         log.info("Fetching subcategory with id: {}", id);
-        return repo.findById(id);
+        Optional<Subcategory> subcategory = subcategoryRepository.findById(id);
+        if(!subcategory.isPresent()){
+            StringBuilder message=new StringBuilder("Subcategory with Id: ").append(id).append(" not present.");
+            throw new DataNotFoundException(message.toString());
+        }
+        return subcategory;
     }
 
     @Override
-    public Subcategory updateSubcategoryById(Subcategory subcategory) {
+    public Subcategory updateSubcategoryById(Long id, Subcategory subcategory) {
         log.info("Updating subcategory with id: {}", subcategory.getSubcategoryId());
-        return repo.save(subcategory);
+        if (!this.getSubcategoryById(id).isPresent()) {
+            StringBuilder message=new StringBuilder("Subcategory with give id: ").append(id).append(" not present in database.");
+            throw new DataNotFoundException(message.toString());
+        }
+        subcategory.setSubcategoryId(id);
+        return subcategoryRepository.save(subcategory);
     }
 
     @Override
     public void deleteSubcategoryById(Long id) {
         try{
-            repo.deleteById(id);
+            if(!this.getSubcategoryById(id).isPresent()){
+                StringBuilder message=new StringBuilder("Subategory with Id: ").append(id).append(" not present in database.");
+                throw new DataNotFoundException(message.toString());
+            }
+            subcategoryRepository.deleteById(id);
         } catch(Exception ex){
             String errorMessage = "Failed to delete subcategory with id: " + id;
             log.error(errorMessage, ex);
-            throw new SubcategoryDeleteException("Failed to delete subcategory with id: " + id);
+            throw new DataDeleteException(errorMessage+" "+ex.getMessage());
         }
     }
     

@@ -14,7 +14,7 @@ public interface MCQQuestionService {
 
     Optional<MCQQuestion> getQuestionById(Long id);
 
-    MCQQuestion updateQuestionById(MCQQuestion question);
+    MCQQuestion updateQuestionById(Long id, MCQQuestion question);
 
     void deleteQuestionById(Long id);
 

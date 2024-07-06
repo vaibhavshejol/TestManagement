@@ -14,7 +14,7 @@ public interface SubcategoryService {
 
     Optional<Subcategory> getSubcategoryById(Long id);
 
-    Subcategory updateSubcategoryById(Subcategory subcategory);
+    Subcategory updateSubcategoryById(Long id, Subcategory subcategory);
 
     void deleteSubcategoryById(Long id);
 }

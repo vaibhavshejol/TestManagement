@@ -18,9 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bnt.entities.MCQQuestion;
 import com.bnt.entities.Subcategory;
+import com.bnt.exception.DataDeleteException;
+import com.bnt.exception.DataDuplicateException;
+import com.bnt.exception.DataNotFoundException;
 import com.bnt.exception.InvalidFileException;
-import com.bnt.exception.MCQQuestionDeleteException;
-import com.bnt.exception.MCQQuestionDuplicateException;
+import com.bnt.exception.UnexpectedException;
 import com.bnt.repository.MCQQuestionRepository;
 import com.bnt.service.CategoryService;
 import com.bnt.service.MCQQuestionService;
@@ -50,7 +52,7 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
         }
         Long id=mcqQuestionRepository.findQuestionIdByQuestionName(question.getQuestion());
         if(id!=null){
-            throw new MCQQuestionDuplicateException("MCQ question with "+question.getQuestion()+" is already present.");
+            throw new DataDuplicateException("MCQ question with "+question.getQuestion()+" is already present.");
         }
         log.info("MCQ Question creation started.");
         return mcqQuestionRepository.save(question);
@@ -80,7 +82,7 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
             log.info("Workbook initialized successfully");
         } catch (IOException ex) {
             log.error("Failed to initialize workbook in uploadBulkQuestions method in MCQQuestionServiceImpl.", ex);
-            throw new UnexpectedException("Unexpected error occurred", ex);
+            throw new UnexpectedException("Unexpected error occurred"+ex.getMessage());
         }
         Sheet sheet = workbook.getSheet("MCQ");
         for (Row row : sheet) {
@@ -88,7 +90,6 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
             MCQQuestion question = new MCQQuestion();
 
             log.info("Processing row: {}", row.getRowNum());
-
 
             Long categoryId = categoryService.getCategoryIdByCategoryName(row.getCell(1).getStringCellValue());
             if(categoryId<1||categoryId==null){
@@ -137,8 +138,11 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
                 default:log.error("Failed to retrive negative marks from cell in uploadBulkQuestions method in MCQQuestionServiceImpl.");
             }
             mcqQuestionRepository.save(question);
-
         }
+
+        List<Object> sucssessList=new ArrayList<>();
+        sucssessList.add("File uploaded and questions created successfully.");
+        map.put("Success Message", sucssessList);
 
         if(faildCategoryList.size()>1){
             map.put("Category", faildSubcategoryList);
@@ -149,50 +153,51 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
         if(alreadyPresentQuestionList.size()>1){
             map.put("Questions", alreadyPresentQuestionList);
         }
-
         return map;
     }
 
     @Override
     public List<MCQQuestion> getAllQuestions() {
-        try{
-            return mcqQuestionRepository.findAll();
-        }catch(Exception ex){
-            log.error("Failed to fetch all questions", ex);
-            return null;
+        List<MCQQuestion> mcqQuestionList = mcqQuestionRepository.findAll();
+        if(mcqQuestionList==null){
+            throw new DataNotFoundException("Categories not present in database");
         }
-        
+        return mcqQuestionList;        
     }
 
     @Override
     public Optional<MCQQuestion> getQuestionById(Long id) {
-        try{
-            return mcqQuestionRepository.findById(id);
-        }catch(Exception ex){
-            log.error("Failed to fetch question by id: {}",id);
-            return null;
+        Optional<MCQQuestion> mcqQuestion = mcqQuestionRepository.findById(id);
+        if(!mcqQuestion.isPresent()){
+            StringBuilder message=new StringBuilder("MCQQuestion with Id: ").append(id).append(" not present in database.");
+            throw new DataNotFoundException(message.toString());
         }
-        
+        return mcqQuestion;
     }
 
     @Override
-    public MCQQuestion updateQuestionById(MCQQuestion question) {
-        try{
-            return mcqQuestionRepository.save(question);
-        }catch(Exception ex){
-            log.error("Failed to update question with id: {}",question.getId());
-            return null;
+    public MCQQuestion updateQuestionById(Long id, MCQQuestion question) {
+        log.info("Updating question in MCQQuestion service implement with id: {}", id);
+        if (!this.getQuestionById(id).isPresent()) {
+            StringBuilder message=new StringBuilder("MCQQuestion with Id: ").append(id).append(" not present in database.");
+            throw new DataNotFoundException(message.toString());
         }
-       
+        question.setId(id);
+        return mcqQuestionRepository.save(question);
     }
 
     @Override
     public void deleteQuestionById(Long id) {
         try {
+            if (!this.getQuestionById(id).isPresent()) {
+                StringBuilder message=new StringBuilder("MCQQuestion with Id: ").append(id).append(" not present in database.");
+                throw new DataNotFoundException(message.toString());
+            }
             mcqQuestionRepository.deleteById(id);
         } catch (Exception ex) {
-             throw new MCQQuestionDeleteException("Failed to delete question with id: " + id);
+            String errorMessage = "Failed to delete question with id: " + id;
+            log.error(errorMessage, ex);
+            throw new DataDeleteException(errorMessage+" "+ex.getMessage());
         }
-    }
-    
+    }  
 }
