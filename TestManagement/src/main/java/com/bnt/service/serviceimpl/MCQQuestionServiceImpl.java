@@ -78,8 +78,9 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
         try {
             workbook = new XSSFWorkbook(file.getInputStream());
             log.info("Workbook initialized successfully");
-        } catch (IOException e) {
-            log.error("Failed to initialize workbook in uploadBulkQuestions method in MCQQuestionServiceImpl.", e);
+        } catch (IOException ex) {
+            log.error("Failed to initialize workbook in uploadBulkQuestions method in MCQQuestionServiceImpl.", ex);
+            throw new UnexpectedException("Unexpected error occurred", ex);
         }
         Sheet sheet = workbook.getSheet("MCQ");
         for (Row row : sheet) {
