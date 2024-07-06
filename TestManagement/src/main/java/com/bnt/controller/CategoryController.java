@@ -43,6 +43,7 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
+    //API for get category by id
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
         log.info("Request recieved in category controller for fetching category with id: {}", id);
