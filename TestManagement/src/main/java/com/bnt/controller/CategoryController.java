@@ -59,6 +59,7 @@ public class CategoryController {
         return ResponseEntity.ok(updatedCategory);
     }
 
+    //API for delete category by id
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategoryById(@PathVariable Long id) {
         log.info("Request received in category controller for deleting category with id: {}", id);
