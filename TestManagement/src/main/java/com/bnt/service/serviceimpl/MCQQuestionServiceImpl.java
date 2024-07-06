@@ -86,7 +86,7 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
             if (row.getRowNum() == 0) continue; // Here we skiped header row
             MCQQuestion question = new MCQQuestion();
 
-            log.debug("Processing row: {}", row.getRowNum());
+            log.info("Processing row: {}", row.getRowNum());
 
 
             Long categoryId = categoryService.getCategoryIdByCategoryName(row.getCell(1).getStringCellValue());
