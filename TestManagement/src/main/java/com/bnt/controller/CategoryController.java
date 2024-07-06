@@ -35,7 +35,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 
-    //API for get all category category
+    //API for get all category
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategory() {
         log.info("Request recieved in category controller for fetching all categories");
