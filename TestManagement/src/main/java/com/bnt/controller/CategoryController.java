@@ -51,6 +51,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.FOUND).body(category.get());
     }
 
+    //API for update category by id
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategoryById(@PathVariable Long id, @RequestBody Category category) {
         log.info("Request received in category controller for updating category with id: {}", id);
