@@ -23,7 +23,7 @@ public class GlobalExceptionHandler extends Exception{
     }
     
     @ExceptionHandler
-    public ResponseEntity<Object> categoryDeleteException(DeleteException ex){
+    public ResponseEntity<Object> categoryDeleteException(DataDeleteException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }

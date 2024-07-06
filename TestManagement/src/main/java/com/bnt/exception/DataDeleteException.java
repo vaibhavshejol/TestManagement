@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class DeleteException extends RuntimeException {
+public class DataDeleteException extends RuntimeException {
 
-    public DeleteException(String message) {
+    public DataDeleteException(String message) {
         super(message);
     }
 }
