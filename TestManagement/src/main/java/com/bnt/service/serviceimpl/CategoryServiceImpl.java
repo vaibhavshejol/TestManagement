@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bnt.entities.Category;
-import com.bnt.exception.CategoryDeleteException;
+import com.bnt.exception.DeleteException;
 import com.bnt.exception.CategoryDuplicateException;
 import com.bnt.exception.CategoryNotFoundException;
 import com.bnt.exception.IllegalArgumentException;
@@ -89,7 +89,7 @@ public class CategoryServiceImpl implements CategoryService {
         } catch (Exception ex) {
             String errorMessage = "Failed to delete category with id: " + id;
             log.error(errorMessage, ex);
-            throw new CategoryDeleteException(errorMessage);
+            throw new DeleteException(errorMessage);
         }
     }
 }

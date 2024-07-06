@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bnt.entities.MCQQuestion;
-import com.bnt.exception.MCQQuestionDeleteException;
 import com.bnt.service.MCQQuestionService;
 
 import lombok.extern.slf4j.Slf4j;

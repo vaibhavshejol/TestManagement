@@ -23,7 +23,7 @@ public class GlobalExceptionHandler extends Exception{
     }
     
     @ExceptionHandler
-    public ResponseEntity<Object> categoryDeleteException(CategoryDeleteException ex){
+    public ResponseEntity<Object> categoryDeleteException(DeleteException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
@@ -62,12 +62,6 @@ public class GlobalExceptionHandler extends Exception{
     public ResponseEntity<Object> mcqQuestionNotFoundException(MCQQuestionNotFoundException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-    
-    @ExceptionHandler
-    public ResponseEntity<Object> mcqQuestionDeleteException(MCQQuestionDeleteException ex){
-        ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
     
     @ExceptionHandler
