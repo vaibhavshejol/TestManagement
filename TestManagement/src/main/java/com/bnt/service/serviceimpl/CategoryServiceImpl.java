@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bnt.entities.Category;
 import com.bnt.exception.DeleteException;
-import com.bnt.exception.CategoryDuplicateException;
+import com.bnt.exception.DataDuplicateException;
 import com.bnt.exception.CategoryNotFoundException;
 import com.bnt.exception.IllegalArgumentException;
 import com.bnt.repository.CategoryRepository;
@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
         Long id=categoryRepository.findCategoryIdByCategoryName(category.getCategoryName());
         if(id!=null){
             StringBuilder message=new StringBuilder("Category with name ").append(category.getCategoryName()).append(" already exists.");
-            throw new CategoryDuplicateException(message.toString());
+            throw new DataDuplicateException(message.toString());
         }
         log.info("Creating category: {}", category.getCategoryName());
         return categoryRepository.save(category);

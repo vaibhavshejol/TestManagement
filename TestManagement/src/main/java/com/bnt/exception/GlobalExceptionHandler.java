@@ -11,7 +11,7 @@ import com.bnt.response.ErrorResponse;
 public class GlobalExceptionHandler extends Exception{
     
     @ExceptionHandler
-    public ResponseEntity<Object> categoryDuplicateException(CategoryDuplicateException ex){
+    public ResponseEntity<Object> categoryDuplicateException(DataDuplicateException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
     }

@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 //Custom exception class for duplicate entry of category
 @ResponseStatus(HttpStatus.CONFLICT)
-public class CategoryDuplicateException extends RuntimeException {
+public class DataDuplicateException extends RuntimeException {
 
-    public CategoryDuplicateException(String message) {
+    public DataDuplicateException(String message) {
         super(message);
     }
 }
