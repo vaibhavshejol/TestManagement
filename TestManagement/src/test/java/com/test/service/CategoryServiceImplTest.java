@@ -1,155 +1,111 @@
-// package com.test.service;
+package com.test.service;
 
-// import static org.junit.jupiter.api.Assertions.*;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.Mockito.*;
+import com.test.entities.Category;
+import com.test.repository.CategoryRepository;
+import com.test.service.serviceimpl.CategoryServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.MockitoAnnotations;
-// import org.springframework.boot.test.context.SpringBootTest;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-// import com.test.entities.Category;
-// import com.test.exception.CategoryDeleteException;
-// import com.test.exception.CategoryDuplicateException;
-// import com.test.repository.CategoryRepository;
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+class CategoryServiceImplTest {
 
-// @SpringBootTest
-// public class CategoryServiceImplTest {
+    @Mock
+    private CategoryRepository categoryRepository;
 
-//     @Mock
-//     private CategoryRepository categoryRepository;
+    @InjectMocks
+    private CategoryServiceImpl categoryService;
 
-//     @InjectMocks
-//     private CategoryService categoryService = new CategoryServiceImpl();
+    @Test
+    void testCreateCategory_Success() {
+        Category expectedCategory = new Category();
+        expectedCategory.setCategoryId(1L);
+        expectedCategory.setCategoryName("Java Category");
+        expectedCategory.setCategoryDescription("Java Category Description.");
+        when(categoryRepository.findCategoryIdByCategoryName("Java Category")).thenReturn(null);
+        when(categoryRepository.save(any(Category.class))).thenReturn(expectedCategory);
+        Category createdCategory = categoryService.createCategory(expectedCategory);
+        assertThat(createdCategory).isNotNull();
+        assertThat(createdCategory.getCategoryId()).isEqualTo(1L);
+        assertThat(createdCategory.getCategoryName()).isEqualTo("Java Category");
+        assertThat(createdCategory.getCategoryDescription()).isEqualTo("Java Category Description.");
+    }
 
-//     @BeforeEach
-//     public void init() {
-//         MockitoAnnotations.openMocks(this);
-//     }
+    @Test
+    void testGetAllCategory_Success() {
+        List<Category> categoryList = new ArrayList<>();
+        Category category1 = new Category();
+        category1.setCategoryId(1L);
+        category1.setCategoryName("Java Category");
+        category1.setCategoryDescription("Java Category Description");
+        categoryList.add(category1);
+        Category category2 = new Category();
+        category2.setCategoryId(2L);
+        category2.setCategoryName("SQL Category");
+        category2.setCategoryDescription("SQL Category Description");
+        categoryList.add(category2);
+        when(categoryRepository.findAll()).thenReturn(categoryList);
+        List<Category> actualCategories = categoryService.getAllCategory();
+        assertThat(actualCategories).isNotEmpty().hasSize(2);
+        assertThat(actualCategories.get(0)).isEqualTo(category1);
+        assertThat(actualCategories.get(1)).isEqualTo(category2);
+    }
 
-//     @Test
-//     public void testCreateCategory() {
-//         Category newCategory = new Category();
-//         newCategory.setCategoryName("Test Category");
+    @Test
+    void testGetCategoryById_Success() {
+        Category expectedCategory = new Category();
+        expectedCategory.setCategoryId(1L);
+        expectedCategory.setCategoryName("Java Category");
+        expectedCategory.setCategoryDescription("Java Category Description.");
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(expectedCategory));
+        Optional<Category> fetchedCategory = categoryService.getCategoryById(1L);
+        assertThat(fetchedCategory).isPresent();
+        Category actualCategory = fetchedCategory.get();
+        assertThat(actualCategory.getCategoryId()).isEqualTo(1L);
+        assertThat(actualCategory.getCategoryName()).isEqualTo("Java Category");
+        assertThat(actualCategory.getCategoryDescription()).isEqualTo("Java Category Description.");
+    }
 
-//         when(categoryRepository.findCategoryIdByCategoryName(newCategory.getCategoryName())).thenReturn(null);
-//         when(categoryRepository.save(any(Category.class))).thenReturn(newCategory);
+    @Test
+    void testUpdateCategoryById_Success() {
+        Category existingCategory = new Category();
+        existingCategory.setCategoryId(1L);
+        existingCategory.setCategoryName("Existing Category");
+        existingCategory.setCategoryDescription("Existing Description");
 
-//         Category createdCategory = categoryService.createCategory(newCategory);
+        Category updatedCategory = new Category();
+        updatedCategory.setCategoryId(1L);
+        updatedCategory.setCategoryName("Updated Category");
+        updatedCategory.setCategoryDescription("Updated Description");
 
-//         assertNotNull(createdCategory);
-//         assertEquals(newCategory.getCategoryName(), createdCategory.getCategoryName());
-//         verify(categoryRepository, times(1)).findCategoryIdByCategoryName(newCategory.getCategoryName());
-//         verify(categoryRepository, times(1)).save(any(Category.class));
-//     }
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(existingCategory));
+        when(categoryRepository.save(any(Category.class))).thenReturn(updatedCategory);
 
-//     @Test
-//     public void testCreateCategory_DuplicateException() {
-//         Category existingCategory = new Category();
-//         existingCategory.setCategoryName("Existing Category");
+        Category actualCategory = categoryService.updateCategoryById(1L, updatedCategory);
 
-//         when(categoryRepository.findCategoryIdByCategoryName(existingCategory.getCategoryName())).thenReturn(1L);
+        assertThat(actualCategory).isNotNull();
+        assertThat(actualCategory.getCategoryId()).isEqualTo(1L);
+        assertThat(actualCategory.getCategoryName()).isEqualTo("Updated Category");
+        assertThat(actualCategory.getCategoryDescription()).isEqualTo("Updated Description");
+    }
 
-//         Exception exception = assertThrows(CategoryDuplicateException.class, () -> {
-//             categoryService.createCategory(existingCategory);
-//         });
-
-//         String expectedMessage = "Category with name " + existingCategory.getCategoryName() + " is already present.";
-//         String actualMessage = exception.getMessage();
-
-//         assertTrue(actualMessage.contains(expectedMessage));
-//         verify(categoryRepository, times(1)).findCategoryIdByCategoryName(existingCategory.getCategoryName());
-//         verify(categoryRepository, times(0)).save(any(Category.class));
-//     }
-
-//     @Test
-//     public void testGetAllCategory() {
-//         List<Category> categories = new ArrayList<>();
-//         categories.add(new Category());
-//         categories.add(new Category());
-
-//         when(categoryRepository.findAll()).thenReturn(categories);
-
-//         List<Category> fetchedCategories = categoryService.getAllCategory();
-
-//         assertEquals(2, fetchedCategories.size());
-//         verify(categoryRepository, times(1)).findAll();
-//     }
-
-//     @Test
-//     public void testGetCategoryById() {
-//         Long categoryId = 1L;
-//         Category category = new Category();
-//         category.setCategoryId(categoryId);
-//         category.setCategoryName("Test Category");
-
-//         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
-
-//         Optional<Category> fetchedCategoryOptional = categoryService.getCategoryById(categoryId);
-
-//         assertTrue(fetchedCategoryOptional.isPresent());
-//         assertEquals(categoryId, fetchedCategoryOptional.get().getCategoryId());
-//         assertEquals("Test Category", fetchedCategoryOptional.get().getCategoryName());
-//         verify(categoryRepository, times(1)).findById(categoryId);
-//     }
-
-//     @Test
-//     public void testGetCategoryById_NotFound() {
-//         Long categoryId = 1L;
-
-//         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
-
-//         Optional<Category> fetchedCategoryOptional = categoryService.getCategoryById(categoryId);
-
-//         assertFalse(fetchedCategoryOptional.isPresent());
-//         verify(categoryRepository, times(1)).findById(categoryId);
-//     }
-
-//     @Test
-//     public void testUpdateCategoryById() {
-//         Long categoryId = 1L;
-//         Category updatedCategory = new Category();
-//         updatedCategory.setCategoryId(1L);
-//         updatedCategory.setCategoryName("Updated Category");
-
-//         when(categoryRepository.save(any(Category.class))).thenReturn(updatedCategory);
-
-//         Category returnedCategory = categoryService.updateCategoryById(categoryId, updatedCategory);
-
-//         assertNotNull(returnedCategory);
-//         assertEquals(updatedCategory.getCategoryName(), returnedCategory.getCategoryName());
-//         verify(categoryRepository, times(1)).save(any(Category.class));
-//     }
-
-//     @Test
-//     public void testDeleteCategoryById() {
-//         Long categoryId = 1L;
-
-//         doNothing().when(categoryRepository).deleteById(categoryId);
-
-//         assertDoesNotThrow(() -> categoryService.deleteCategoryById(categoryId));
-//         verify(categoryRepository, times(1)).deleteById(categoryId);
-//     }
-
-//     @Test
-//     public void testDeleteCategoryById_Exception() {
-//         Long categoryId = 1L;
-//         String errorMessage = "Failed to delete category with id: " + categoryId;
-
-//         doThrow(new RuntimeException(errorMessage)).when(categoryRepository).deleteById(categoryId);
-
-//         Exception exception = assertThrows(CategoryDeleteException.class, () -> {
-//             categoryService.deleteCategoryById(categoryId);
-//         });
-
-//         assertEquals(errorMessage, exception.getMessage());
-//         verify(categoryRepository, times(1)).deleteById(categoryId);
-//     }
-// }
+    @Test
+    void testDeleteCategoryById_Success() {
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(new Category()));
+        categoryService.deleteCategoryById(1L);
+        verify(categoryRepository, times(1)).findById(1L);
+        verify(categoryRepository, times(1)).deleteById(1L);
+    }
+}

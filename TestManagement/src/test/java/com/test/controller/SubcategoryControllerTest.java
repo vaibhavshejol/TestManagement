@@ -1,155 +1,93 @@
-// package com.test.controller;
+package com.test.controller;
 
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.Mockito.*;
+import com.test.entities.Category;
+import com.test.entities.Subcategory;
+import com.test.service.SubcategoryService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-// import java.util.Arrays;
-// import java.util.List;
-// import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.MockitoAnnotations;
-// import org.springframework.boot.test.context.SpringBootTest;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
-// import com.test.entities.Subcategory;
-// import com.test.service.SubcategoryService;
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+class SubcategoryControllerTest {
 
-// @SpringBootTest
-// public class SubcategoryControllerTest {
+    @Mock
+    private SubcategoryService subcategoryService;
 
-//     @Mock
-//     private SubcategoryService subcategoryService;
+    @InjectMocks
+    private SubcategoryController subcategoryController;
 
-//     @InjectMocks
-//     private SubcategoryController subcategoryController;
+    @Test
+    void testCreateSubcategory_Success() {
+        Subcategory expectedSubcategory = new Subcategory();
+        expectedSubcategory.setSubcategoryId(1L);
+        expectedSubcategory.setSubcategoryName("Collection");
+        expectedSubcategory.setSubcategoryDescription("Callection Subcategory");
+        expectedSubcategory.setCategory(new Category());
+        when(subcategoryService.createSubcategory(any(Subcategory.class))).thenReturn(expectedSubcategory);
+        ResponseEntity<Subcategory> actualSubcategory = subcategoryController.createSubcategory(expectedSubcategory);
+        assertThat(actualSubcategory.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(actualSubcategory.getBody()).isEqualTo(expectedSubcategory);
+    }
 
-//     @BeforeEach
-//     public void init() {
-//         MockitoAnnotations.openMocks(this);
-//     }
+    @Test
+    void testGetAllSubcategory_Success() {
+        List<Subcategory> expectedSubcategories = new ArrayList<>();
+        expectedSubcategories.add(new Subcategory());
+        expectedSubcategories.add(new Subcategory());
+        when(subcategoryService.getAllSubcategory()).thenReturn(expectedSubcategories);
+        ResponseEntity<List<Subcategory>> actualSubcategories = subcategoryController.getAllSubcategory();
+        assertThat(actualSubcategories.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(actualSubcategories.getBody()).isEqualTo(expectedSubcategories);
+    }
 
-//     //test case for add or create subcategory
-//     @Test
-//     public void testCreateSubcategory() {
-//         Subcategory subcategory = new Subcategory();
-//         subcategory.setSubcategoryName("Test Subcategory");
+    @Test
+    void testGetSubcategoryById_Success() {
+        Subcategory expectedSubcategory = new Subcategory();
+        expectedSubcategory.setSubcategoryId(1L);
+        expectedSubcategory.setSubcategoryName("Collection");
+        expectedSubcategory.setSubcategoryDescription("Callection Subcategory");
+        expectedSubcategory.setCategory(new Category());
+        when(subcategoryService.getSubcategoryById(1L)).thenReturn(Optional.of(expectedSubcategory));
+        ResponseEntity<Subcategory> actualSubcategory = subcategoryController.getSubcategoryById(1L);
+        assertThat(actualSubcategory.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(actualSubcategory.getBody()).isEqualTo(expectedSubcategory);
+    }
 
-//         when(subcategoryService.createSubcategory(any(Subcategory.class))).thenReturn(subcategory);
+    @Test
+    void testUpdateSubcategoryById_Success() {
+        Subcategory expectedSubcategory = new Subcategory();
+        expectedSubcategory.setSubcategoryId(1L);
+        expectedSubcategory.setSubcategoryName("Updated Subcategory");
+        expectedSubcategory.setSubcategoryDescription("Updated Description");
+        expectedSubcategory.setCategory(new Category());
+        when(subcategoryService.updateSubcategoryById(eq(1L), any(Subcategory.class))).thenReturn(expectedSubcategory);
+        ResponseEntity<Subcategory> actualSubcategory = subcategoryController.updateSubcategoryById(1L, expectedSubcategory);
+        assertThat(actualSubcategory.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(actualSubcategory.getBody()).isEqualTo(expectedSubcategory);
+    }
 
-//         ResponseEntity<?> responseEntity = subcategoryController.createSubcategory(subcategory);
+    @Test
+    void testDeleteSubcategoryById_Success() {
+        ResponseEntity<String> expectedResponse = ResponseEntity.ok("Subcategory deleted.");
+        when(subcategoryService.getSubcategoryById(1L)).thenReturn(Optional.of(new Subcategory()));
+        ResponseEntity<String> actualResponse = subcategoryController.deleteSubcategoryById(1L);
+        assertThat(actualResponse.getStatusCode()).isEqualTo(expectedResponse.getStatusCode());
+        assertThat(actualResponse.getBody()).isEqualTo(expectedResponse.getBody());
+    }
 
-//         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-//         assertEquals(subcategory, responseEntity.getBody());
-//         verify(subcategoryService, times(1)).createSubcategory(any(Subcategory.class));
-//     }
-
-//     @Test
-//     public void testGetAllSubcategory() {
-//         Subcategory subcategory1 = new Subcategory();
-//         subcategory1.setSubcategoryName("Subcategory 1");
-//         Subcategory subcategory2 = new Subcategory();
-//         subcategory2.setSubcategoryName("Subcategory 2");
-
-//         List<Subcategory> subcategories = Arrays.asList(subcategory1, subcategory2);
-
-//         when(subcategoryService.getAllSubcategory()).thenReturn(subcategories);
-
-//         ResponseEntity<List<Subcategory>> responseEntity = subcategoryController.getAllSubcategory();
-
-//         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//         assertEquals(subcategories, responseEntity.getBody());
-//         verify(subcategoryService, times(1)).getAllSubcategory();
-//     }
-
-//     @Test
-//     public void testGetSubcategoryById() {
-//         Long subcategoryId = 1L;
-//         Subcategory subcategory = new Subcategory();
-//         subcategory.setSubcategoryId(subcategoryId);
-//         subcategory.setSubcategoryName("Test Subcategory");
-
-//         when(subcategoryService.getSubcategoryById(subcategoryId)).thenReturn(Optional.of(subcategory));
-
-//         ResponseEntity<Subcategory> responseEntity = subcategoryController.getSubcategoryById(subcategoryId);
-
-//         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//         assertEquals(subcategory, responseEntity.getBody());
-//         verify(subcategoryService, times(1)).getSubcategoryById(subcategoryId);
-//     }
-
-//     @Test
-//     public void testGetSubcategoryById_NotFound() {
-//         Long subcategoryId = 1L;
-
-//         when(subcategoryService.getSubcategoryById(subcategoryId)).thenReturn(Optional.empty());
-
-//         ResponseEntity<Subcategory> responseEntity = subcategoryController.getSubcategoryById(subcategoryId);
-
-//         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-//         verify(subcategoryService, times(1)).getSubcategoryById(subcategoryId);
-//     }
-
-//     @Test
-//     public void testUpdateSubcategoryById() {
-//         Long subcategoryId = 1L;
-//         Subcategory updatedSubcategory = new Subcategory();
-//         updatedSubcategory.setSubcategoryId(subcategoryId);
-//         updatedSubcategory.setSubcategoryName("Updated Test Subcategory");
-
-//         when(subcategoryService.getSubcategoryById(subcategoryId)).thenReturn(Optional.of(new Subcategory()));
-//         when(subcategoryService.updateSubcategoryById(any(Subcategory.class))).thenReturn(updatedSubcategory);
-
-//         ResponseEntity<Subcategory> responseEntity = subcategoryController.updateSubcategoryById(subcategoryId, updatedSubcategory);
-
-//         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//         assertEquals(updatedSubcategory, responseEntity.getBody());
-//         verify(subcategoryService, times(1)).updateSubcategoryById(any(Subcategory.class));
-//     }
-
-//     @Test
-//     public void testUpdateSubcategoryById_NotFound() {
-//         Long subcategoryId = 1L;
-//         Subcategory updatedSubcategory = new Subcategory();
-//         updatedSubcategory.setSubcategoryId(subcategoryId);
-//         updatedSubcategory.setSubcategoryName("Updated Test Subcategory");
-
-//         when(subcategoryService.getSubcategoryById(subcategoryId)).thenReturn(Optional.empty());
-
-//         ResponseEntity<Subcategory> responseEntity = subcategoryController.updateSubcategoryById(subcategoryId, updatedSubcategory);
-
-//         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-//         verify(subcategoryService, times(0)).updateSubcategoryById(any(Subcategory.class));
-//     }
-
-//     @Test
-//     public void testDeleteSubcategoryById() {
-//         Long subcategoryId = 1L;
-
-//         when(subcategoryService.getSubcategoryById(subcategoryId)).thenReturn(Optional.of(new Subcategory()));
-
-//         ResponseEntity<String> responseEntity = subcategoryController.deleteSubcategoryById(subcategoryId);
-
-//         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//         assertEquals("Subcategory deleted.", responseEntity.getBody());
-//         verify(subcategoryService, times(1)).deleteSubcategoryById(subcategoryId);
-//     }
-
-//     @Test
-//     public void testDeleteSubcategoryById_NotFound() {
-//         Long subcategoryId = 1L;
-
-//         when(subcategoryService.getSubcategoryById(subcategoryId)).thenReturn(Optional.empty());
-
-//         ResponseEntity<String> responseEntity = subcategoryController.deleteSubcategoryById(subcategoryId);
-
-//         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//         assertEquals("Subcategory with given id is not present to delete.", responseEntity.getBody());
-//         verify(subcategoryService, times(0)).deleteSubcategoryById(subcategoryId);
-//     }
-// }
+}

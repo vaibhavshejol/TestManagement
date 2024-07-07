@@ -1,155 +1,116 @@
-// package com.test.service;
+package com.test.service;
 
-// import static org.junit.jupiter.api.Assertions.*;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.Mockito.*;
+import com.test.entities.Category;
+import com.test.entities.Subcategory;
+import com.test.repository.SubcategoryRepository;
+import com.test.service.serviceimpl.SubcategoryServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.MockitoAnnotations;
-// import org.springframework.boot.test.context.SpringBootTest;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-// import com.test.entities.Subcategory;
-// import com.test.exception.SubcategoryDeleteException;
-// import com.test.exception.SubcategoryDuplicateException;
-// import com.test.repository.SubcategoryRepository;
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+class SubcategoryServiceImplTest {
 
-// @SpringBootTest
-// public class SubcategoryServiceImplTest {
+    @Mock
+    private SubcategoryRepository subcategoryRepository;
 
-//     @Mock
-//     private SubcategoryRepository subcategoryRepository;
+    @InjectMocks
+    private SubcategoryServiceImpl subcategoryService;
 
-//     @InjectMocks
-//     private SubcategoryService subcategoryService = new SubcategoryServiceImpl();
+    @Test
+    void testCreateSubcategory_Success() {
+        Subcategory expectedSubcategory = new Subcategory();
+        expectedSubcategory.setSubcategoryId(1L);
+        expectedSubcategory.setSubcategoryName("Collection Subcategory");
+        expectedSubcategory.setSubcategoryDescription("Collection Subcategory Description");
+        expectedSubcategory.setCategory(new Category());
+        when(subcategoryRepository.findSubcategoryIdBySubcategoryName("Collection Subcategory")).thenReturn(null);
+        when(subcategoryRepository.save(any(Subcategory.class))).thenReturn(expectedSubcategory);
+        Subcategory createdSubcategory = subcategoryService.createSubcategory(expectedSubcategory);
+        assertThat(createdSubcategory).isNotNull();
+        assertThat(createdSubcategory.getSubcategoryId()).isEqualTo(1L);
+        assertThat(createdSubcategory.getSubcategoryName()).isEqualTo("Collection Subcategory");
+        assertThat(createdSubcategory.getSubcategoryDescription()).isEqualTo("Collection Subcategory Description");
+        verify(subcategoryRepository, times(1)).save(any(Subcategory.class));
+    }
 
-//     @BeforeEach
-//     public void init() {
-//         MockitoAnnotations.openMocks(this);
-//     }
+    @Test
+    void testGetAllSubcategory_Success() {
+        Subcategory subcategory1 = new Subcategory();
+        subcategory1.setSubcategoryId(1L);
+        subcategory1.setSubcategoryName("Collection Subcategory");
+        subcategory1.setSubcategoryDescription("Collection Subcategory Description");
+        subcategory1.setCategory(new Category());
 
-//     //test case for create or add subcategory
-//     @Test
-//     public void testCreateSubcategory() {
-//         Subcategory newSubcategory = new Subcategory();
-//         newSubcategory.setSubcategoryName("Test Subcategory");
+        Subcategory subcategory2 = new Subcategory();
+        subcategory2.setSubcategoryId(2L);
+        subcategory2.setSubcategoryName("Annotations Subcategory");
+        subcategory2.setSubcategoryDescription("Annotations Subcategory Description");
+        subcategory2.setCategory(new Category());
 
-//         when(subcategoryRepository.findSubcategoryIdBySubcategoryName(newSubcategory.getSubcategoryName())).thenReturn(null);
-//         when(subcategoryRepository.save(any(Subcategory.class))).thenReturn(newSubcategory);
+        List<Subcategory> expectedSubcategories = Arrays.asList(subcategory1, subcategory2);
 
-//         Subcategory createdSubcategory = subcategoryService.createSubcategory(newSubcategory);
+        when(subcategoryRepository.findAll()).thenReturn(expectedSubcategories);
+        List<Subcategory> actualSubcategories = subcategoryService.getAllSubcategory();
 
-//         assertNotNull(createdSubcategory);
-//         assertEquals(newSubcategory.getSubcategoryName(), createdSubcategory.getSubcategoryName());
-//         verify(subcategoryRepository, times(1)).findSubcategoryIdBySubcategoryName(newSubcategory.getSubcategoryName());
-//         verify(subcategoryRepository, times(1)).save(any(Subcategory.class));
-//     }
+        assertThat(actualSubcategories).isNotNull().hasSize(2);
+        assertThat(actualSubcategories.get(0).getSubcategoryId()).isEqualTo(1L);
+        assertThat(actualSubcategories.get(0).getSubcategoryName()).isEqualTo("Collection Subcategory");
+        assertThat(actualSubcategories.get(1).getSubcategoryId()).isEqualTo(2L);
+        assertThat(actualSubcategories.get(1).getSubcategoryName()).isEqualTo("Annotations Subcategory");
+        verify(subcategoryRepository, times(1)).findAll();
+    }
 
-//     @Test
-//     public void testCreateSubcategory_DuplicateException() {
-//         Subcategory existingSubcategory = new Subcategory();
-//         existingSubcategory.setSubcategoryName("Existing Subcategory");
+    @Test
+    void testGetSubcategoryById_Success() {
+        Subcategory expectedSubcategory = new Subcategory();
+        expectedSubcategory.setSubcategoryId(1L);
+        expectedSubcategory.setSubcategoryName("Collection Subcategory");
+        expectedSubcategory.setSubcategoryDescription("Collection Subcategory Description");
+        expectedSubcategory.setCategory(new Category());
+        when(subcategoryRepository.findById(1L)).thenReturn(Optional.of(expectedSubcategory));
+        Optional<Subcategory> actualSubcategory = subcategoryService.getSubcategoryById(1L);
+        assertThat(actualSubcategory).isPresent();
+        assertThat(actualSubcategory.get().getSubcategoryId()).isEqualTo(1L);
+        assertThat(actualSubcategory.get().getSubcategoryName()).isEqualTo("Collection Subcategory");
+        assertThat(actualSubcategory.get().getSubcategoryDescription()).isEqualTo("Collection Subcategory Description");
+        verify(subcategoryRepository, times(1)).findById(1L);
+    }
 
-//         when(subcategoryRepository.findSubcategoryIdBySubcategoryName(existingSubcategory.getSubcategoryName())).thenReturn(1L);
+    @Test
+    void testUpdateSubcategoryById_Success() {
+        Subcategory expectedSubcategory = new Subcategory();
+        expectedSubcategory.setSubcategoryId(1L);
+        expectedSubcategory.setSubcategoryName("Updated Collection Subcategory");
+        expectedSubcategory.setSubcategoryDescription("Updated Collection Subcategory Description");
+        when(subcategoryRepository.findById(1L)).thenReturn(Optional.of(expectedSubcategory));
+        when(subcategoryRepository.save(any(Subcategory.class))).thenReturn(expectedSubcategory);
+        Subcategory updatedSubcategory = subcategoryService.updateSubcategoryById(1L, expectedSubcategory);
+        assertThat(updatedSubcategory).isNotNull();
+        assertThat(updatedSubcategory.getSubcategoryId()).isEqualTo(1L);
+        assertThat(updatedSubcategory.getSubcategoryName()).isEqualTo("Updated Collection Subcategory");
+        assertThat(updatedSubcategory.getSubcategoryDescription()).isEqualTo("Updated Collection Subcategory Description");
+        verify(subcategoryRepository, times(1)).findById(1L);
+        verify(subcategoryRepository, times(1)).save(any(Subcategory.class));
+    }
 
-//         Exception exception = assertThrows(SubcategoryDuplicateException.class, () -> {
-//             subcategoryService.createSubcategory(existingSubcategory);
-//         });
-
-//         String expectedMessage = "Subcategory with name " + existingSubcategory.getSubcategoryName() + " is already present";
-//         String actualMessage = exception.getMessage();
-
-//         assertTrue(actualMessage.contains(expectedMessage));
-//         verify(subcategoryRepository, times(1)).findSubcategoryIdBySubcategoryName(existingSubcategory.getSubcategoryName());
-//         verify(subcategoryRepository, times(0)).save(any(Subcategory.class));
-//     }
-
-//     @Test
-//     public void testGetAllSubcategory() {
-//         List<Subcategory> subcategories = new ArrayList<>();
-//         subcategories.add(new Subcategory());
-//         subcategories.add(new Subcategory());
-
-//         when(subcategoryRepository.findAll()).thenReturn(subcategories);
-
-//         List<Subcategory> fetchedSubcategories = subcategoryService.getAllSubcategory();
-
-//         assertEquals(2, fetchedSubcategories.size());
-//         verify(subcategoryRepository, times(1)).findAll();
-//     }
-
-//     @Test
-//     public void testGetSubcategoryById() {
-//         Long subcategoryId = 1L;
-//         Subcategory subcategory = new Subcategory();
-//         subcategory.setSubcategoryId(subcategoryId);
-//         subcategory.setSubcategoryName("Test Subcategory");
-
-//         when(subcategoryRepository.findById(subcategoryId)).thenReturn(Optional.of(subcategory));
-
-//         Optional<Subcategory> fetchedSubcategoryOptional = subcategoryService.getSubcategoryById(subcategoryId);
-
-//         assertTrue(fetchedSubcategoryOptional.isPresent());
-//         assertEquals(subcategoryId, fetchedSubcategoryOptional.get().getSubcategoryId());
-//         assertEquals("Test Subcategory", fetchedSubcategoryOptional.get().getSubcategoryName());
-//         verify(subcategoryRepository, times(1)).findById(subcategoryId);
-//     }
-
-//     @Test
-//     public void testGetSubcategoryById_NotFound() {
-//         Long subcategoryId = 1L;
-
-//         when(subcategoryRepository.findById(subcategoryId)).thenReturn(Optional.empty());
-
-//         Optional<Subcategory> fetchedSubcategoryOptional = subcategoryService.getSubcategoryById(subcategoryId);
-
-//         assertFalse(fetchedSubcategoryOptional.isPresent());
-//         verify(subcategoryRepository, times(1)).findById(subcategoryId);
-//     }
-
-//     @Test
-//     public void testUpdateSubcategoryById() {
-//         Subcategory updatedSubcategory = new Subcategory();
-//         updatedSubcategory.setSubcategoryId(1L);
-//         updatedSubcategory.setSubcategoryName("Updated Subcategory");
-
-//         when(subcategoryRepository.save(any(Subcategory.class))).thenReturn(updatedSubcategory);
-
-//         Subcategory returnedSubcategory = subcategoryService.updateSubcategoryById(updatedSubcategory);
-
-//         assertNotNull(returnedSubcategory);
-//         assertEquals(updatedSubcategory.getSubcategoryName(), returnedSubcategory.getSubcategoryName());
-//         verify(subcategoryRepository, times(1)).save(any(Subcategory.class));
-//     }
-
-//     @Test
-//     public void testDeleteSubcategoryById() {
-//         Long subcategoryId = 1L;
-
-//         doNothing().when(subcategoryRepository).deleteById(subcategoryId);
-
-//         assertDoesNotThrow(() -> subcategoryService.deleteSubcategoryById(subcategoryId));
-//         verify(subcategoryRepository, times(1)).deleteById(subcategoryId);
-//     }
-
-//     @Test
-//     public void testDeleteSubcategoryById_Exception() {
-//         Long subcategoryId = 1L;
-//         String errorMessage = "Failed to delete subcategory with id: " + subcategoryId;
-
-//         doThrow(new RuntimeException(errorMessage)).when(subcategoryRepository).deleteById(subcategoryId);
-
-//         Exception exception = assertThrows(SubcategoryDeleteException.class, () -> {
-//             subcategoryService.deleteSubcategoryById(subcategoryId);
-//         });
-
-//         assertEquals(errorMessage, exception.getMessage());
-//         verify(subcategoryRepository, times(1)).deleteById(subcategoryId);
-//     }
-// }
+    @Test
+    void testDeleteSubcategoryById_Success() {
+        when(subcategoryRepository.findById(1L)).thenReturn(Optional.of(new Subcategory()));
+        subcategoryService.deleteSubcategoryById(1L);
+        verify(subcategoryRepository, times(1)).findById(1L);
+        verify(subcategoryRepository, times(1)).deleteById(1L);
+    }
+}

@@ -1,88 +1,112 @@
-// package com.test.service;
+package com.test.service;
 
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.Mockito.when;
+import com.test.entities.MCQQuestion;
+import com.test.entities.Subcategory;
+import com.test.repository.MCQQuestionRepository;
+import com.test.service.serviceimpl.MCQQuestionServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.Optional;
+import java.util.*;
 
-// import org.junit.jupiter.api.Test;
-// import org.mockito.Mock;
-// import org.springframework.boot.test.context.SpringBootTest;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
-// import com.test.entities.MCQQuestion;
-// import com.test.entities.Subcategory;
-// import com.test.repository.MCQQuestionRepository;
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+class MCQQuestionServiceImplTest {
 
-// @SpringBootTest
-// public class MCQQuestionServiceImplTest {
-    
-//     @Mock
-//     private MCQQuestionRepository repo;
-    
-//     @Mock
-//     private MCQQuestionService questionService;
+    @Mock
+    private MCQQuestionRepository mcqQuestionRepository;
 
-//     @Test
-//     public void createQuestion() {
-//         MCQQuestion expectedQuestion=new MCQQuestion();
-//         Subcategory subcategory=new Subcategory();
-//         expectedQuestion.setId(1L);
-//         expectedQuestion.setSubcategory(subcategory);
-//         expectedQuestion.setQuestion("What is spring boot?");
+    @Mock
+    private CategoryService categoryService;
 
-//         when(repo.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
-//         assertEquals(1, expectedQuestion.getId());
-//     }
+    @Mock
+    private SubcategoryService subcategoryService;
 
-//     @Test
-//     public void getAllQuestions() {
-//         MCQQuestion expectedQuestion=new MCQQuestion();
-//         Subcategory subcategory=new Subcategory();
-//         expectedQuestion.setId(1L);
-//         expectedQuestion.setSubcategory(subcategory);
-//         expectedQuestion.setQuestion("What is spring boot?");
+    @InjectMocks
+    private MCQQuestionServiceImpl mcqQuestionService;
 
-//         MCQQuestion expectedQuestion1=new MCQQuestion();
-//         Subcategory subcategory1=new Subcategory();
-//         expectedQuestion1.setId(2L);
-//         expectedQuestion.setSubcategory(subcategory1);
-//         expectedQuestion1.setQuestion("What is hibernate?");
+    private List<MCQQuestion> expectedQuestionsList;
+    private MCQQuestion expectedQuestion;
 
-//         List<MCQQuestion> list=new ArrayList<MCQQuestion>();
-//         list.add(expectedQuestion);
-//         list.add(expectedQuestion1);
+    @BeforeEach
+    void setUp() {
+        expectedQuestionsList = new ArrayList<>();
+        expectedQuestion = new MCQQuestion();
+        expectedQuestion.setId(1L);
+        expectedQuestion.setQuestion("What is Java?");
+        expectedQuestion.setOptionOne("OOP");
+        expectedQuestion.setOptionTwo("SOOP");
+        expectedQuestion.setOptionThree("BOOP");
+        expectedQuestion.setOptionFour("HOOP");
+        expectedQuestion.setCorrectOption("OOP");
+        expectedQuestion.setPositiveMark(4);
+        expectedQuestion.setNegativeMark(1);
+        Subcategory subcategory = new Subcategory();
+        subcategory.setSubcategoryId(1L);
+        subcategory.setSubcategoryName("Core Java Basics");
+        expectedQuestion.setSubcategory(subcategory);
+        expectedQuestionsList.add(expectedQuestion);
+    }
 
-//         when(repo.findAll()).thenReturn(list);
-//         assertEquals(2, list.size());
-//     }
+    @Test
+    void testCreateQuestion_Success() {
+        when(mcqQuestionRepository.findQuestionIdByQuestionName(anyString())).thenReturn(null);
+        when(mcqQuestionRepository.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
+        MCQQuestion actualQuestion = mcqQuestionService.createQuestion(expectedQuestion);
+        assertThat(actualQuestion).isNotNull();
+        assertThat(actualQuestion.getId()).isEqualTo(1L);
+        assertThat(actualQuestion.getQuestion()).isEqualTo("What is Java?");
+        assertThat(actualQuestion.getSubcategory().getSubcategoryId()).isEqualTo(1L);
+        verify(mcqQuestionRepository, times(1)).save(any(MCQQuestion.class));
+    }
 
-//     @Test
-//     public void getQuestionById() {
-//         MCQQuestion question=new MCQQuestion();
-//         Subcategory subcategory=new Subcategory();
-//         question.setId(1L);
-//         question.setSubcategory(subcategory);
-//         question.setQuestion("What is spring boot?");
-//         Optional<MCQQuestion> expectedQuestion=Optional.of(question);
-        
+    @Test
+    void testGetAllQuestions_Success() {
+        when(mcqQuestionRepository.findAll()).thenReturn(expectedQuestionsList);
+        List<MCQQuestion> actualQuestionsList = mcqQuestionService.getAllQuestions();
+        assertThat(actualQuestionsList).isNotNull().hasSize(1);
+        assertThat(actualQuestionsList.get(0).getId()).isEqualTo(1L);
+        assertThat(actualQuestionsList.get(0).getQuestion()).isEqualTo("What is Java?");
+        verify(mcqQuestionRepository, times(1)).findAll();
+    }
 
-//         when(repo.findById(1L)).thenReturn(expectedQuestion);
-//         assertEquals(1, expectedQuestion.get().getId());
-//     }
+    @Test
+    void testGetQuestionById_Success() {
+        when(mcqQuestionRepository.findById(1L)).thenReturn(Optional.of(expectedQuestion));
+        Optional<MCQQuestion> actualQuestion = mcqQuestionService.getQuestionById(1L);
+        assertThat(actualQuestion).isPresent();
+        assertThat(actualQuestion.get().getId()).isEqualTo(1L);
+        assertThat(actualQuestion.get().getQuestion()).isEqualTo("What is Java?");
+        verify(mcqQuestionRepository, times(1)).findById(1L);
+    }
 
-//     @Test
-//     public void updateQuestion() {
-//         MCQQuestion expectedQuestion=new MCQQuestion();
-//         Subcategory subcategory=new Subcategory();
-//         expectedQuestion.setId(1L);
-//         expectedQuestion.setSubcategory(subcategory);
-//         expectedQuestion.setQuestion("What is spring boot?");
+    @Test
+    void testUpdateQuestionById_Success() {
+        when(mcqQuestionRepository.findById(1L)).thenReturn(Optional.of(expectedQuestion));
+        when(mcqQuestionRepository.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
+        MCQQuestion updatedQuestion = mcqQuestionService.updateQuestionById(1L, expectedQuestion);
 
-//         when(repo.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
-//         assertEquals(1, expectedQuestion.getId());
-//     }
+        assertThat(updatedQuestion).isNotNull();
+        assertThat(updatedQuestion.getId()).isEqualTo(1L);
+        assertThat(updatedQuestion.getQuestion()).isEqualTo("What is Java?");
+        verify(mcqQuestionRepository, times(1)).findById(1L);
+        verify(mcqQuestionRepository, times(1)).save(any(MCQQuestion.class));
+    }
 
-// }
+    @Test
+    void testDeleteQuestionById_Success() {
+        when(mcqQuestionRepository.findById(1L)).thenReturn(Optional.of(expectedQuestion));
+        mcqQuestionService.deleteQuestionById(1L);
+        verify(mcqQuestionRepository, times(1)).findById(1L);
+        verify(mcqQuestionRepository, times(1)).deleteById(1L);
+    }
+}

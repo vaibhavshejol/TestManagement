@@ -1,113 +1,86 @@
-// package com.test.controller;
+package com.test.controller;
 
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.junit.jupiter.api.Assertions.assertNotEquals;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.Mockito.when;
+import com.test.entities.MCQQuestion;
+import com.test.service.MCQQuestionService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-// import org.junit.jupiter.api.Test;
-// import org.mockito.Mock;
-// import org.springframework.boot.test.context.SpringBootTest;
-// import org.springframework.http.ResponseEntity;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
-// import com.test.entities.MCQQuestion;
-// import com.test.entities.Subcategory;
-// import com.test.service.MCQQuestionService;
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+class MCQQuestionControllerTest {
 
-// @SpringBootTest
-// public class MCQQuestionControllerTest {
-    
-//     @Mock
-//     private MCQQuestionService questionService;
+    @Mock
+    private MCQQuestionService questionService;
 
-//     @Mock
-//     private MCQQuestionController questionController;
+    @InjectMocks
+    private MCQQuestionController questionController;
 
-    
-//     @Test
-//     public void createQuestion() {
-//         MCQQuestion expectedQuestion=new MCQQuestion();
-//         Subcategory subcategory=new Subcategory();
-//         expectedQuestion.setId(1L);
-//         expectedQuestion.setSubcategory(subcategory);
-//         expectedQuestion.setQuestion("What is spring boot?");
+    @Test
+    void testCreateQuestion_Success() {
+        MCQQuestion expectedQuestion = new MCQQuestion();
+        expectedQuestion.setId(1L);
+        expectedQuestion.setQuestion("Test Question");
+        when(questionService.createQuestion(any(MCQQuestion.class))).thenReturn(expectedQuestion);
+        ResponseEntity<MCQQuestion> actualQuestion = questionController.createQuestion(expectedQuestion);
+        assertThat(actualQuestion.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(actualQuestion.getBody()).isEqualTo(expectedQuestion);
+    }
 
-//         when(questionService.createQuestion(any(MCQQuestion.class))).thenReturn(expectedQuestion);
-//         assertEquals(1, expectedQuestion.getId());
-//     }
+    @Test
+    void testGetAllQuestions_Success() {
+        List<MCQQuestion> expectedQuestionsList = new ArrayList<>();
+        expectedQuestionsList.add(new MCQQuestion());
+        expectedQuestionsList.add(new MCQQuestion());
+        when(questionService.getAllQuestions()).thenReturn(expectedQuestionsList);
+        ResponseEntity<List<MCQQuestion>> actualQuestionList = questionController.getAllQuestions();
+        assertThat(actualQuestionList.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(actualQuestionList.getBody()).isEqualTo(expectedQuestionsList);
+    }
 
-//     @Test
-//     public void getAllQuestions() {
-//         MCQQuestion expectedQuestion=new MCQQuestion();
-//         Subcategory subcategory=new Subcategory();
-//         expectedQuestion.setId(1L);
-//         expectedQuestion.setSubcategory(subcategory);
-//         expectedQuestion.setQuestion("What is spring boot?");
+    @Test
+    void testGetQuestionById_Success() {
+        MCQQuestion expectedQuestion = new MCQQuestion();
+        expectedQuestion.setId(1L);
+        expectedQuestion.setQuestion("Test Question");
+        when(questionService.getQuestionById(1L)).thenReturn(Optional.of(expectedQuestion));
+        ResponseEntity<MCQQuestion> actualQuestion = questionController.getQuestionById(1L);
+        assertThat(actualQuestion.getStatusCode()).isEqualTo(HttpStatus.FOUND);
+        assertThat(actualQuestion.getBody()).isEqualTo(expectedQuestion);
+    }
 
-//         MCQQuestion expectedQuestion1=new MCQQuestion();
-//         Subcategory subcategory1=new Subcategory();
-//         expectedQuestion1.setId(2L);
-//         expectedQuestion.setSubcategory(subcategory1);
-//         expectedQuestion1.setQuestion("What is hibernate?");
+    @Test
+    void testUpdateQuestionById_Success() {
+        MCQQuestion expectedQuestion = new MCQQuestion();
+        expectedQuestion.setId(1L);
+        expectedQuestion.setQuestion("Updated Question");
+        when(questionService.updateQuestionById(eq(1L), any(MCQQuestion.class))).thenReturn(expectedQuestion);
+        ResponseEntity<MCQQuestion> actualQuesiton = questionController.updateQuestionById(1L, expectedQuestion);
+        assertThat(actualQuesiton.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(actualQuesiton.getBody()).isEqualTo(expectedQuestion);
+    }
 
-//         List<MCQQuestion> list=new ArrayList<MCQQuestion>();
-//         list.add(expectedQuestion);
-//         list.add(expectedQuestion1);
-
-//         when(questionService.getAllQuestions()).thenReturn(list);
-//         assertEquals(2, list.size());
-//     }
-
-//     @Test
-//     public void getQuestionById() {
-//         MCQQuestion question=new MCQQuestion();
-//         Subcategory subcategory=new Subcategory();
-//         question.setId(1L);
-//         question.setSubcategory(subcategory);
-//         question.setQuestion("What is spring boot?");
-//         Optional<MCQQuestion> expectedQuestion=Optional.of(question);
-        
-
-//         when(questionService.getQuestionById(1L)).thenReturn(expectedQuestion);
-//         assertEquals(1, expectedQuestion.get().getId());
-//     }
-
-//     @Test
-//     public void updateQuestionById() {
-//         MCQQuestion expectedQuestion=new MCQQuestion();
-//         Subcategory subcategory=new Subcategory();
-//         expectedQuestion.setId(1L);
-//         expectedQuestion.setSubcategory(subcategory);
-//         expectedQuestion.setQuestion("What is spring boot?");
-
-//         when(questionService.updateQuestionById(any(MCQQuestion.class))).thenReturn(expectedQuestion);
-//         assertEquals(1, expectedQuestion.getId());
-        
-//         assertNotEquals(2, expectedQuestion.getId());
-//     }
-
-//     @Test
-//     public void deleteQuestionById() {
-
-//         ResponseEntity<String> expectedResponse = ResponseEntity.ok("Question deleted.");
-//         when(questionController.deleteQuestionById(1L)).thenReturn(expectedResponse);
-
-//         // Calling the controller method
-//         ResponseEntity<String> response = questionController.deleteQuestionById(1L);
-
-//         // Asserting the response
-//         assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
-//         assertEquals(expectedResponse.getBody(), response.getBody());
-
-
-
-//         // when(questionController.deleteQuestionById(1L)).thenReturn("Question deleted.");
-//         // String result=questionController.deleteQuestionById(1L);
-//         // assertEquals("Question deleted.", result);
-//     }
-
-// }
+    @Test
+    void testDeleteQuestionById_Success() {
+        ResponseEntity<String> expectedResponse = ResponseEntity.ok("Question deleted.");
+        doNothing().when(questionService).deleteQuestionById(1L);
+        ResponseEntity<String> actualResponse = questionController.deleteQuestionById(1L);
+        assertThat(actualResponse.getStatusCode()).isEqualTo(expectedResponse.getStatusCode());
+        assertThat(actualResponse.getBody()).isEqualTo(expectedResponse.getBody());
+    }
+}
