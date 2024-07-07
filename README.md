@@ -68,21 +68,21 @@ Request Body: Updated JSON containing subcategoryName and optionally subcategory
 - Delete Subcategory by Id<br>
 Endpoint: DELETE /subcategory/{id}<br>
 #### MCQ Question Management
-- Create MCQ Question
-Endpoint: POST /questions
+- Create MCQ Question<br>
+Endpoint: POST /questions<br>
 Request Body: JSON containing all fields required for an MCQ question
-- Upload Bulk MCQ Questions
-Endpoint: POST /questions/uploadBulkQuestions
+- Upload Bulk MCQ Questions<br>
+Endpoint: POST /questions/uploadBulkQuestions<br>
 Request Body: Multipart file (Excel format)
-- Get All MCQ Questions
-Endpoint: GET /questions
-- Get MCQ Question by Id
-Endpoint: GET /questions/{id}
-- Update MCQ Question by Id
-Endpoint: PUT /questions/{id}
+- Get All MCQ Questions<br>
+Endpoint: GET /questions<br>
+- Get MCQ Question by Id<br>
+Endpoint: GET /questions/{id}<br>
+- Update MCQ Question by Id<br>
+Endpoint: PUT /questions/{id}<br>
 Request Body: Updated JSON containing fields to update
-- Delete MCQ Question by Id
-Endpoint: DELETE /questions/{id}
+- Delete MCQ Question by Id<br>
+Endpoint: DELETE /questions/{id}<br>
 Example
 To create a category:
 http
