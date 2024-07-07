@@ -45,43 +45,43 @@ The application provides the following RESTful APIs:
 - Create Category<br>
 Endpoint: POST /category<br>
 Request Body: JSON containing categoryName and optionally categoryDescription
-- Get All Categories
-Endpoint: GET /category
-- Get Category by Id
-Endpoint: GET /category/{id}
-- Update Category by Id
-Endpoint: PUT /category/{id}
+- Get All Categories<br>
+Endpoint: GET /category<br>
+- Get Category by Id<br>
+Endpoint: GET /category/{id}<br>
+- Update Category by Id<br>
+Endpoint: PUT /category/{id}<br>
 Request Body: Updated JSON containing categoryName and optionally categoryDescription
-- Delete Category by Id
-Endpoint: DELETE /category/{id}
-Subcategory Management
-Create Subcategory
-Endpoint: POST /subcategory
+- Delete Category by Id<br>
+Endpoint: DELETE /category/{id}<br>
+#### Subcategory Management
+- Create Subcategory<br>
+Endpoint: POST /subcategory<br>
 Request Body: JSON containing subcategoryName and optionally subcategoryDescription
-Get All Subcategories
-Endpoint: GET /subcategory
-Get Subcategory by Id
-Endpoint: GET /subcategory/{id}
-Update Subcategory by Id
-Endpoint: PUT /subcategory/{id}
+- Get All Subcategories<br>
+Endpoint: GET /subcategory<br>
+- Get Subcategory by Id<br>
+Endpoint: GET /subcategory/{id}<br>
+- Update Subcategory by Id<br>
+Endpoint: PUT /subcategory/{id}<br>
 Request Body: Updated JSON containing subcategoryName and optionally subcategoryDescription
-Delete Subcategory by Id
-Endpoint: DELETE /subcategory/{id}
-MCQ Question Management
-Create MCQ Question
+- Delete Subcategory by Id<br>
+Endpoint: DELETE /subcategory/{id}<br>
+#### MCQ Question Management
+- Create MCQ Question
 Endpoint: POST /questions
 Request Body: JSON containing all fields required for an MCQ question
-Upload Bulk MCQ Questions
+- Upload Bulk MCQ Questions
 Endpoint: POST /questions/uploadBulkQuestions
 Request Body: Multipart file (Excel format)
-Get All MCQ Questions
+- Get All MCQ Questions
 Endpoint: GET /questions
-Get MCQ Question by Id
+- Get MCQ Question by Id
 Endpoint: GET /questions/{id}
-Update MCQ Question by Id
+- Update MCQ Question by Id
 Endpoint: PUT /questions/{id}
 Request Body: Updated JSON containing fields to update
-Delete MCQ Question by Id
+- Delete MCQ Question by Id
 Endpoint: DELETE /questions/{id}
 Example
 To create a category:
