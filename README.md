@@ -1,35 +1,99 @@
-# TestManagement
-This project is a Test Management System implemented using Spring Boot and Java. It provides RESTful APIs to manage multiple-choice questions (MCQs) for tests.
+# Test Management Application
 
+This project is a Test Management Application designed to manage multiple-choice questions (MCQs) categorized under various categories and subcategories.
 
-**Features**
-Create, read, update, and delete MCQ questions, Category and Subcategory.
-Retrieve a list of all MCQ questions or a specific question by its ID.
-Retrieve a list of all category or a specific category by its ID.
-Retrieve a list of all subcategory or a specific category by its ID.
+# Features
 
+- **Category Management**:
+  - Create, read, update, and delete categories.
+- **Subcategory Management**:
+  - Create, read, update, and delete subcategories associated with categories.
+- **MCQ Question Management**:
+  - Create, read, update, and delete multiple-choice questions with options, marks, and correct answers.
+  - Bulk upload of MCQ questions via Excel file.
 
-**Technologies Used**
-Java
-Spring Boot
-Spring Data JPA
-H2 Database (for demo purposes; can be configured to any database)
+# Technologies Used
 
+- Java
+- Spring Boot
+- Spring Data JPA
+- H2 Database (for demo, can be replaced with other databases like MySQL, PostgreSQL)
+- Apache POI (for Excel file handling)
+- Lombok (for reducing boilerplate code)
+- Maven (for dependency management)
 
-**Getting Started**
-To run this project locally, follow these steps:
+## Getting Started
 
-Clone the repository:
-git clone https://github.com/vaibhavshejol/TestManagement.git
+### Prerequisites
 
-Navigate to the project directory
-cd TestManagement
+- Java 8 or higher
+- Maven
+- IDE (IntelliJ IDEA, Eclipse, etc.)
 
+### Installation
 
-**Run the application**
-You can run the application using directly from your IDE.
-Open the project in your IDE and run TestManagementApplication.java as a Java application.
+1. Clone the repository
+   ```sh
+   git clone https://github.com/yourusername/test-management.git
+Open the project in your IDE
+Build the project using Maven
+Usage
+API Endpoints
+The application provides the following RESTful APIs:
 
+Category Management
+Create Category
+Endpoint: POST /category
+Request Body: JSON containing categoryName and optionally categoryDescription
+Get All Categories
+Endpoint: GET /category
+Get Category by Id
+Endpoint: GET /category/{id}
+Update Category by Id
+Endpoint: PUT /category/{id}
+Request Body: Updated JSON containing categoryName and optionally categoryDescription
+Delete Category by Id
+Endpoint: DELETE /category/{id}
+Subcategory Management
+Create Subcategory
+Endpoint: POST /subcategory
+Request Body: JSON containing subcategoryName and optionally subcategoryDescription
+Get All Subcategories
+Endpoint: GET /subcategory
+Get Subcategory by Id
+Endpoint: GET /subcategory/{id}
+Update Subcategory by Id
+Endpoint: PUT /subcategory/{id}
+Request Body: Updated JSON containing subcategoryName and optionally subcategoryDescription
+Delete Subcategory by Id
+Endpoint: DELETE /subcategory/{id}
+MCQ Question Management
+Create MCQ Question
+Endpoint: POST /questions
+Request Body: JSON containing all fields required for an MCQ question
+Upload Bulk MCQ Questions
+Endpoint: POST /questions/uploadBulkQuestions
+Request Body: Multipart file (Excel format)
+Get All MCQ Questions
+Endpoint: GET /questions
+Get MCQ Question by Id
+Endpoint: GET /questions/{id}
+Update MCQ Question by Id
+Endpoint: PUT /questions/{id}
+Request Body: Updated JSON containing fields to update
+Delete MCQ Question by Id
+Endpoint: DELETE /questions/{id}
+Example
+To create a category:
+http
+Copy code
+POST /category
+Content-Type: application/json
+
+{
+  "categoryName": "Sample Category",
+  "categoryDescription": "Description of the sample category"
+}
 
 **Access the application**
 Once the application is running, you can access it at:
