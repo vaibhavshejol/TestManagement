@@ -34,7 +34,7 @@ This project is a Test Management Application designed to manage multiple-choice
 
 1. Clone the repository
    ```sh
-   git clone https://github.com/yourusername/test-management.git
+   git clone https://github.com/vaibhavshejol/TestManagement.git
 Open the project in your IDE
 Build the project using Maven
 Usage
