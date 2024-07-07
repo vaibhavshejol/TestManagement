@@ -42,8 +42,8 @@ API Endpoints
 The application provides the following RESTful APIs:
 
 #### Category Management
-- Create Category
-Endpoint: POST /category
+- Create Category<br>
+Endpoint: POST /category<br>
 Request Body: JSON containing categoryName and optionally categoryDescription
 - Get All Categories
 Endpoint: GET /category
