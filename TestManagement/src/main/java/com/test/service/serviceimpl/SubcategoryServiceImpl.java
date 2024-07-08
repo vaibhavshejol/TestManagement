@@ -19,8 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class SubcategoryServiceImpl implements SubcategoryService {
 
-    @Autowired
     private SubcategoryRepository subcategoryRepository;
+
+    public SubcategoryServiceImpl(SubcategoryRepository subcategoryRepository){
+        this.subcategoryRepository=subcategoryRepository;
+    }
 
     public Long getSubcategoryIdBySubcategoryName(String subcategoryName) {
         return subcategoryRepository.findSubcategoryIdBySubcategoryName(subcategoryName);

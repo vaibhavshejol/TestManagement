@@ -11,7 +11,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,12 +34,16 @@ public class MCQQuestionServiceImpl implements MCQQuestionService {
 
     private static final  int  NUMERIC = 0;
     private static final int STRING = 1;
-    @Autowired
+
     private MCQQuestionRepository mcqQuestionRepository;
-    @Autowired
     private CategoryService categoryService;
-    @Autowired
     private SubcategoryService subcategoryService;
+
+    public MCQQuestionServiceImpl(MCQQuestionRepository mcqQuestionRepository, CategoryService categoryService, SubcategoryService subcategoryService){
+        this.mcqQuestionRepository=mcqQuestionRepository;
+        this.categoryService=categoryService;
+        this.subcategoryService=subcategoryService;
+    }
 
     @Override
     public MCQQuestion createQuestion(MCQQuestion question) {

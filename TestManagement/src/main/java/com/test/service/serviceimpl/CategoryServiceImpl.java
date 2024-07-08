@@ -20,8 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
     private CategoryRepository categoryRepository;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository){
+        this.categoryRepository=categoryRepository;
+    }
 
     @Override
     public Category createCategory(Category category) {

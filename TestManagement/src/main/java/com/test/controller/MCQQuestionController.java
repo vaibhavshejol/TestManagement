@@ -1,6 +1,5 @@
 package com.test.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,8 +27,11 @@ import java.util.*;
 @RequestMapping("/questions")
 public class MCQQuestionController {
 
-    @Autowired
     private MCQQuestionService questionService;
+
+    public MCQQuestionController(MCQQuestionService questionService){
+        this.questionService=questionService;
+    }
 
     @PostMapping
     public ResponseEntity<MCQQuestion> createQuestion(@RequestBody MCQQuestion question) {

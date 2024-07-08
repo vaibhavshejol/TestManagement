@@ -1,6 +1,5 @@
 package com.test.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,8 +25,11 @@ import java.util.*;
 @RequestMapping("/subcategory")
 public class SubcategoryController {
 
-    @Autowired
     private SubcategoryService subcategoryService;
+
+    public SubcategoryController(SubcategoryService subcategoryService){
+        this.subcategoryService=subcategoryService;
+    }
     
     @PostMapping
     public ResponseEntity<Subcategory> createSubcategory(@RequestBody Subcategory subcategory) {
