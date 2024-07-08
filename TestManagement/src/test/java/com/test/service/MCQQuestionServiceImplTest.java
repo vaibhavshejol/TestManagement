@@ -58,7 +58,7 @@ class MCQQuestionServiceImplTest {
     }
 
     @Test
-    void testCreateQuestion_Success() {
+    void testCreateQuestion() {
         when(mcqQuestionRepository.findQuestionIdByQuestionName(anyString())).thenReturn(null);
         when(mcqQuestionRepository.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
         MCQQuestion actualQuestion = mcqQuestionService.createQuestion(expectedQuestion);
@@ -70,7 +70,7 @@ class MCQQuestionServiceImplTest {
     }
 
     @Test
-    void testGetAllQuestions_Success() {
+    void testGetAllQuestions() {
         when(mcqQuestionRepository.findAll()).thenReturn(expectedQuestionsList);
         List<MCQQuestion> actualQuestionsList = mcqQuestionService.getAllQuestions();
         assertThat(actualQuestionsList).isNotNull().hasSize(1);
@@ -80,7 +80,7 @@ class MCQQuestionServiceImplTest {
     }
 
     @Test
-    void testGetQuestionById_Success() {
+    void testGetQuestionById() {
         when(mcqQuestionRepository.findById(1L)).thenReturn(Optional.of(expectedQuestion));
         Optional<MCQQuestion> actualQuestion = mcqQuestionService.getQuestionById(1L);
         assertThat(actualQuestion).isPresent();
@@ -90,7 +90,7 @@ class MCQQuestionServiceImplTest {
     }
 
     @Test
-    void testUpdateQuestionById_Success() {
+    void testUpdateQuestionById() {
         when(mcqQuestionRepository.findById(1L)).thenReturn(Optional.of(expectedQuestion));
         when(mcqQuestionRepository.save(any(MCQQuestion.class))).thenReturn(expectedQuestion);
         MCQQuestion updatedQuestion = mcqQuestionService.updateQuestionById(1L, expectedQuestion);
@@ -103,7 +103,7 @@ class MCQQuestionServiceImplTest {
     }
 
     @Test
-    void testDeleteQuestionById_Success() {
+    void testDeleteQuestionById() {
         when(mcqQuestionRepository.findById(1L)).thenReturn(Optional.of(expectedQuestion));
         mcqQuestionService.deleteQuestionById(1L);
         verify(mcqQuestionRepository, times(1)).findById(1L);

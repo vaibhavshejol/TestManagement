@@ -29,7 +29,7 @@ class CategoryServiceImplTest {
     private CategoryServiceImpl categoryService;
 
     @Test
-    void testCreateCategory_Success() {
+    void testCreateCategory() {
         Category expectedCategory = new Category();
         expectedCategory.setCategoryId(1L);
         expectedCategory.setCategoryName("Java Category");
@@ -44,7 +44,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void testGetAllCategory_Success() {
+    void testGetAllCategory() {
         List<Category> categoryList = new ArrayList<>();
         Category category1 = new Category();
         category1.setCategoryId(1L);
@@ -64,7 +64,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void testGetCategoryById_Success() {
+    void testGetCategoryById() {
         Category expectedCategory = new Category();
         expectedCategory.setCategoryId(1L);
         expectedCategory.setCategoryName("Java Category");
@@ -79,7 +79,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void testUpdateCategoryById_Success() {
+    void testUpdateCategoryById() {
         Category existingCategory = new Category();
         existingCategory.setCategoryId(1L);
         existingCategory.setCategoryName("Existing Category");
@@ -102,7 +102,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void testDeleteCategoryById_Success() {
+    void testDeleteCategoryById() {
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(new Category()));
         categoryService.deleteCategoryById(1L);
         verify(categoryRepository, times(1)).findById(1L);

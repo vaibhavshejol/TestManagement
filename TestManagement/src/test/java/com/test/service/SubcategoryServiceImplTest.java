@@ -30,7 +30,7 @@ class SubcategoryServiceImplTest {
     private SubcategoryServiceImpl subcategoryService;
 
     @Test
-    void testCreateSubcategory_Success() {
+    void testCreateSubcategory() {
         Subcategory expectedSubcategory = new Subcategory();
         expectedSubcategory.setSubcategoryId(1L);
         expectedSubcategory.setSubcategoryName("Collection Subcategory");
@@ -47,7 +47,7 @@ class SubcategoryServiceImplTest {
     }
 
     @Test
-    void testGetAllSubcategory_Success() {
+    void testGetAllSubcategory() {
         Subcategory subcategory1 = new Subcategory();
         subcategory1.setSubcategoryId(1L);
         subcategory1.setSubcategoryName("Collection Subcategory");
@@ -74,7 +74,7 @@ class SubcategoryServiceImplTest {
     }
 
     @Test
-    void testGetSubcategoryById_Success() {
+    void testGetSubcategoryById() {
         Subcategory expectedSubcategory = new Subcategory();
         expectedSubcategory.setSubcategoryId(1L);
         expectedSubcategory.setSubcategoryName("Collection Subcategory");
@@ -90,7 +90,7 @@ class SubcategoryServiceImplTest {
     }
 
     @Test
-    void testUpdateSubcategoryById_Success() {
+    void testUpdateSubcategoryById() {
         Subcategory expectedSubcategory = new Subcategory();
         expectedSubcategory.setSubcategoryId(1L);
         expectedSubcategory.setSubcategoryName("Updated Collection Subcategory");
@@ -107,7 +107,7 @@ class SubcategoryServiceImplTest {
     }
 
     @Test
-    void testDeleteSubcategoryById_Success() {
+    void testDeleteSubcategoryById() {
         when(subcategoryRepository.findById(1L)).thenReturn(Optional.of(new Subcategory()));
         subcategoryService.deleteSubcategoryById(1L);
         verify(subcategoryRepository, times(1)).findById(1L);

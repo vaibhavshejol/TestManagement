@@ -32,7 +32,7 @@ class MCQQuestionControllerTest {
     private MCQQuestionController questionController;
 
     @Test
-    void testCreateQuestion_Success() {
+    void testCreateQuestion() {
         MCQQuestion expectedQuestion = new MCQQuestion();
         expectedQuestion.setId(1L);
         expectedQuestion.setQuestion("Test Question");
@@ -43,7 +43,7 @@ class MCQQuestionControllerTest {
     }
 
     @Test
-    void testGetAllQuestions_Success() {
+    void testGetAllQuestions() {
         List<MCQQuestion> expectedQuestionsList = new ArrayList<>();
         expectedQuestionsList.add(new MCQQuestion());
         expectedQuestionsList.add(new MCQQuestion());
@@ -54,7 +54,7 @@ class MCQQuestionControllerTest {
     }
 
     @Test
-    void testGetQuestionById_Success() {
+    void testGetQuestionById() {
         MCQQuestion expectedQuestion = new MCQQuestion();
         expectedQuestion.setId(1L);
         expectedQuestion.setQuestion("Test Question");
@@ -65,7 +65,7 @@ class MCQQuestionControllerTest {
     }
 
     @Test
-    void testUpdateQuestionById_Success() {
+    void testUpdateQuestionById() {
         MCQQuestion expectedQuestion = new MCQQuestion();
         expectedQuestion.setId(1L);
         expectedQuestion.setQuestion("Updated Question");
@@ -76,7 +76,7 @@ class MCQQuestionControllerTest {
     }
 
     @Test
-    void testDeleteQuestionById_Success() {
+    void testDeleteQuestionById() {
         ResponseEntity<String> expectedResponse = ResponseEntity.ok("Question deleted.");
         doNothing().when(questionService).deleteQuestionById(1L);
         ResponseEntity<String> actualResponse = questionController.deleteQuestionById(1L);

@@ -32,7 +32,7 @@ class SubcategoryControllerTest {
     private SubcategoryController subcategoryController;
 
     @Test
-    void testCreateSubcategory_Success() {
+    void testCreateSubcategory() {
         Subcategory expectedSubcategory = new Subcategory();
         expectedSubcategory.setSubcategoryId(1L);
         expectedSubcategory.setSubcategoryName("Collection");
@@ -45,7 +45,7 @@ class SubcategoryControllerTest {
     }
 
     @Test
-    void testGetAllSubcategory_Success() {
+    void testGetAllSubcategory() {
         List<Subcategory> expectedSubcategories = new ArrayList<>();
         expectedSubcategories.add(new Subcategory());
         expectedSubcategories.add(new Subcategory());
@@ -56,7 +56,7 @@ class SubcategoryControllerTest {
     }
 
     @Test
-    void testGetSubcategoryById_Success() {
+    void testGetSubcategoryById() {
         Subcategory expectedSubcategory = new Subcategory();
         expectedSubcategory.setSubcategoryId(1L);
         expectedSubcategory.setSubcategoryName("Collection");
@@ -69,7 +69,7 @@ class SubcategoryControllerTest {
     }
 
     @Test
-    void testUpdateSubcategoryById_Success() {
+    void testUpdateSubcategoryById() {
         Subcategory expectedSubcategory = new Subcategory();
         expectedSubcategory.setSubcategoryId(1L);
         expectedSubcategory.setSubcategoryName("Updated Subcategory");
@@ -82,7 +82,7 @@ class SubcategoryControllerTest {
     }
 
     @Test
-    void testDeleteSubcategoryById_Success() {
+    void testDeleteSubcategoryById() {
         ResponseEntity<String> expectedResponse = ResponseEntity.ok("Subcategory deleted.");
         when(subcategoryService.getSubcategoryById(1L)).thenReturn(Optional.of(new Subcategory()));
         ResponseEntity<String> actualResponse = subcategoryController.deleteSubcategoryById(1L);
