@@ -13,25 +13,25 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice
 public class GlobalExceptionHandler extends Exception{
     
-    @ExceptionHandler
+    @ExceptionHandler(DataDuplicateException.class)
     public ResponseEntity<Object> categoryDuplicateException(DataDuplicateException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
     }
     
-    @ExceptionHandler
+    @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<Object> categoryNotFoundException(DataNotFoundException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
     
-    @ExceptionHandler
+    @ExceptionHandler(DataDeleteException.class)
     public ResponseEntity<Object> categoryDeleteException(DataDeleteException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
     
-    @ExceptionHandler
+    @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> illegalArgumentException(IllegalArgumentException ex){
         ErrorResponse errorResponse=new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
