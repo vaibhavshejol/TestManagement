@@ -1,5 +1,7 @@
 package com.test.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,6 +46,7 @@ public class MCQQuestion {
     private Integer negativeMark;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "subcategory_id", referencedColumnName = "subcategory_id")
     private Subcategory subcategory;
 

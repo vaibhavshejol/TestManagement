@@ -7,7 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 
 @Entity
@@ -26,9 +33,11 @@ public class Subcategory {
     private String subcategoryDescription;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category category;
 
-    // @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL)
-    // private List<MCQQuestion> mcqQuestions;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "subcategory")
+    private List<MCQQuestion> mcqQuestions;
 }

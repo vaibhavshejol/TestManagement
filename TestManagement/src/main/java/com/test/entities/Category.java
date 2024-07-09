@@ -5,7 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 
 @Entity
@@ -24,6 +30,7 @@ public class Category {
     @Column(name = "category_description")
     private String categoryDescription;
 
-    // @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    // private List<Subcategory> subcategories;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category")
+    private List<Subcategory> subcategories;
 }
