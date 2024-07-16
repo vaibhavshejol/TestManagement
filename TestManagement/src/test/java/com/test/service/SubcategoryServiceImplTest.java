@@ -2,6 +2,8 @@ package com.test.service;
 
 import com.test.entities.Category;
 import com.test.entities.Subcategory;
+import com.test.exception.DataDeleteException;
+import com.test.exception.DataNotFoundException;
 import com.test.repository.SubcategoryRepository;
 import com.test.service.serviceimpl.SubcategoryServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -112,5 +115,62 @@ class SubcategoryServiceImplTest {
         subcategoryService.deleteSubcategoryById(1L);
         verify(subcategoryRepository, times(1)).findById(1L);
         verify(subcategoryRepository, times(1)).deleteById(1L);
+    }
+
+    ////////////////////// Negative test cases ///////////////////////////
+
+    @Test
+    void testCreateSubcategory_Negative() {
+        Subcategory invalidSubcategory = new Subcategory();
+        invalidSubcategory.setSubcategoryName(null); // Invalid state
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            subcategoryService.createSubcategory(invalidSubcategory);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Provided subcategory not contain proper data.");
+    }
+
+    @Test
+    void testGetAllSubcategory_Negative() {
+        when(subcategoryRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            subcategoryService.getAllSubcategory();
+        });
+        assertThat(exception.getMessage()).isEqualTo("Database error");
+    }
+
+    @Test
+    void testGetSubcategoryById_Negative() {
+        when(subcategoryRepository.findById(1L)).thenReturn(Optional.empty());
+
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
+            subcategoryService.getSubcategoryById(1L);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Subcategory with Id: 1 not present.");
+    }
+
+    @Test
+    void testUpdateSubcategoryById_Negative() {
+        Subcategory updatedSubcategory = new Subcategory();
+        updatedSubcategory.setSubcategoryId(1L);
+        updatedSubcategory.setSubcategoryName("Updated Collection Subcategory");
+
+        when(subcategoryRepository.findById(1L)).thenReturn(Optional.empty());
+
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
+            subcategoryService.updateSubcategoryById(1L, updatedSubcategory);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Subcategory with Id: 1 not present.");
+    }
+
+    @Test
+    void testDeleteSubcategoryById_Negative() {
+        when(subcategoryRepository.findById(1L)).thenReturn(Optional.empty());
+
+        DataDeleteException exception = assertThrows(DataDeleteException.class, () -> {
+            subcategoryService.deleteSubcategoryById(1L);
+        });        assertThat(exception.getMessage()).isEqualTo("Failed to delete subcategory with id: 1 Subcategory with Id: 1 not present.");
+
     }
 }

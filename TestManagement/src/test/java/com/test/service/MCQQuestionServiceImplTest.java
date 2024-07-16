@@ -2,6 +2,8 @@ package com.test.service;
 
 import com.test.entities.MCQQuestion;
 import com.test.entities.Subcategory;
+import com.test.exception.DataDeleteException;
+import com.test.exception.DataNotFoundException;
 import com.test.repository.MCQQuestionRepository;
 import com.test.service.serviceimpl.MCQQuestionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -108,5 +111,62 @@ class MCQQuestionServiceImplTest {
         mcqQuestionService.deleteQuestionById(1L);
         verify(mcqQuestionRepository, times(1)).findById(1L);
         verify(mcqQuestionRepository, times(1)).deleteById(1L);
+    }
+
+    ////////////////// Negative test cases ////////////////////////
+
+    @Test
+    void testCreateQuestion_Negative() {
+        MCQQuestion invalidQuestion = new MCQQuestion();
+        invalidQuestion.setQuestion(null); // Invalid state
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            mcqQuestionService.createQuestion(invalidQuestion);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Provided mcq question object not contain proper data.");
+    }
+
+    @Test
+    void testGetAllQuestions_Negative() {
+        when(mcqQuestionRepository.findAll()).thenThrow(new RuntimeException("MCQ questions not present in database."));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            mcqQuestionService.getAllQuestions();
+        });
+        assertThat(exception.getMessage()).isEqualTo("MCQ questions not present in database.");
+    }
+
+    @Test
+    void testGetQuestionById_Negative() {
+        when(mcqQuestionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
+            mcqQuestionService.getQuestionById(1L);
+        });
+        assertThat(exception.getMessage()).isEqualTo("MCQQuestion with Id: 1 not present in database.");
+    }
+
+    @Test
+    void testUpdateQuestionById_Negative() {
+        MCQQuestion updatedQuestion = new MCQQuestion();
+        updatedQuestion.setId(1L);
+        updatedQuestion.setQuestion("Updated Question");
+
+        when(mcqQuestionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
+            mcqQuestionService.updateQuestionById(1L, updatedQuestion);
+        });
+        assertThat(exception.getMessage()).isEqualTo("MCQQuestion with Id: 1 not present in database.");
+    }
+
+    @Test
+    void testDeleteQuestionById_Negative() {
+        when(mcqQuestionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        DataDeleteException exception = assertThrows(DataDeleteException.class, () -> {
+            mcqQuestionService.deleteQuestionById(1L);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Failed to delete question with id: 1 MCQQuestion with Id: 1 not present in database.");
     }
 }

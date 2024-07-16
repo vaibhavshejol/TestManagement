@@ -1,6 +1,9 @@
 package com.test.service;
 
 import com.test.entities.Category;
+import com.test.exception.DataDeleteException;
+import com.test.exception.DataNotFoundException;
+import com.test.exception.IllegalArgumentException;
 import com.test.repository.CategoryRepository;
 import com.test.service.serviceimpl.CategoryServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -107,5 +111,61 @@ class CategoryServiceImplTest {
         categoryService.deleteCategoryById(1L);
         verify(categoryRepository, times(1)).findById(1L);
         verify(categoryRepository, times(1)).deleteById(1L);
+    }
+
+    /////////////////////////// Negative Test Cases ////////////////////////////////////
+
+    @Test
+    void testCreateCategory_Negative() {
+        Category invalidCategory = new Category();
+        invalidCategory.setCategoryName(null);
+        
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            categoryService.createCategory(invalidCategory);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Provided category object not contain proper data.");
+
+    }
+
+    @Test
+    void testGetAllCategory_Negative() {
+        when(categoryRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            categoryService.getAllCategory();
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Database error");
+    }
+
+    @Test
+    void testGetCategoryById_Negative() {
+        when(categoryRepository.findById(1L)).thenThrow(new DataNotFoundException("Category with this id not present."));
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class, ()->{
+            categoryService.getCategoryById(1L);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Category with this id not present.");
+    }
+
+    @Test
+    void testUpdateCategoryById_Negative() {
+        Category updatedCategory = new Category();
+        updatedCategory.setCategoryId(1L);
+        updatedCategory.setCategoryName("Updated Category");
+        updatedCategory.setCategoryDescription("Updated Description");
+
+        when(categoryRepository.findById(1L)).thenThrow(new DataNotFoundException("Category not found."));
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class, ()->{
+            categoryService.updateCategoryById(1L, updatedCategory);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Category not found.");
+    }
+
+    @Test
+    void testDeleteCategoryById_Negative() {   
+        when(categoryRepository.findById(1L)).thenReturn(Optional.empty());   
+        assertThrows(DataDeleteException.class, () -> {
+            categoryService.deleteCategoryById(1L);
+        });
     }
 }
